@@ -1,0 +1,23 @@
+{
+  "name": "valorize",
+  "version": "1.0.0",
+  "description": "API Gestão Financeira",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon app"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MaykeAlisson/valorize.git"
+  },
+  "author": "Mayke Alisson",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MaykeAlisson/valorize/issues"
+  },
+  "homepage": "https://github.com/MaykeAlisson/valorize#readme",
+  "devDependencies": {
+    "nodemon": "^1.19.4"
+  }
+}
