@@ -13,14 +13,7 @@ module.exports = {
     try {
       // Id do usuario que acaba de ser inserido
       const id_usuario = app.app.model.usuario.cadastro(usuario);
-      endereco.id_usuario = id_usuario;
-      telefone.id_usuario = id_usuario;
-      login.id_usuario = id_usuario;
-      app.app.model.endereco.cadastro(endereco);
-      app.app.model.telefone.cadastro(telefone);
-      app.app.model.login.cadastro(login);
-      res.status(301).redirect('/');
-    }catch (e) {
+     }catch (e) {
       res.status(500).json(e);
     }
 

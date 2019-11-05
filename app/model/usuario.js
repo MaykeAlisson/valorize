@@ -1,7 +1,11 @@
 module.exports = {
 
-  login(usuario){
+  cadastro(usuario){
 
+    // salva usuario no banco
+  },
+
+  login(usuario){
 
     const email = usuario["email"];
     const senha = usuario["senha"];
