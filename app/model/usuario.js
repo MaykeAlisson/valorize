@@ -2,7 +2,7 @@ module.exports = {
 
   cadastro(usuario){
 
-    // salva usuario no banco
+    // salva usuario no banco e retorna id do usuario salvo
   },
 
   login(usuario){
@@ -16,13 +16,18 @@ module.exports = {
       const dadosUsuario = {
         id: 1,
         nome: 'Mayke Alisson',
-        id_perfil: 3
       };
 
       return dadosUsuario;
     }
 
     return null
+
+  },
+
+  atualiza(usuario){
+
+    // atualiza o usuario
 
   },
 
