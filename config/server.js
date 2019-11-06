@@ -18,7 +18,6 @@ app.use(express.static('./app/public'));
 // Definindo auto-load do Consign (inject no app)
 consign()
   .include('./app/routes')
-  .then('./config/db/connectionFactory.js')
   .then('./app/persistencia')
   .then('./app/controllers')
   .into(app);

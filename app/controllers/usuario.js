@@ -2,26 +2,31 @@ module.exports = {
 
   cadastro(app, req, res) {
 
-    const usuario = {
-      nome: req.body.nome,
-      sexo: req.body.sexo,
-      nascimento: req.body.nascimento,
-      email: req.body.email,
-      senha: req.body.senha
-    };
+    // const usuario = {
+    //   nome: req.body.nome,
+    //   sexo: req.body.sexo,
+    //   nascimento: req.body.nascimento,
+    //   email: req.body.email,
+    //   senha: req.body.senha
+    // };
 
-    try {
-      const conexao = app.app.connectionFactory();
-      const usuarioRepository = new app.app.persistencia.UsuarioDAO(conexao);
-      // Id do usuario que acaba de ser inserido
-      usuarioRepository.cadastro(usuario, function(erro, resultado){
-        console.log('usuario criado');
-        res.status(201);
+    const usuario = req.body;
+
+    // try {
+        const connection = app.app.persistencia.connectionFactory();
+           const usuarioDAO = new app.app.persistencia.UsuarioDAO(connection);
+       // Id do usuario que acaba de ser inserido
+      usuarioDAO.cadastro(usuario, function(erro, resultado){
+        if (erro){
+          res.status(500).json(erro);
+        }
+        console.log("retonrno query");
+        res.status(201).json(resultado);
       });
       // res.status(201);
-     }catch (e) {
-      res.status(500).json(e);
-    }
+    //  }catch (e) {
+    //   res.status(500).json(e);
+    // }
 
   },
 

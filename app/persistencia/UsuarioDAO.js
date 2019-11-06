@@ -1,9 +1,11 @@
 function UsuarioDAO(connection){
+  console.log("to no usuario dao");
   this._connection = connection;
 }
 
 UsuarioDAO.prototype.cadastro = function(usuario, callback){
-    this._connection.query('INSERT INTO usuario SET ? ', usuario);
+  console.log("UsuarioDAO" + usuario);
+    this._connection.query('INSERT INTO usuario SET ? ', usuario, callback);
   };
 
   // login(usuario){
@@ -33,3 +35,6 @@ UsuarioDAO.prototype.cadastro = function(usuario, callback){
   // },
 
 
+module.exports = function () {
+  return UsuarioDAO;
+};
