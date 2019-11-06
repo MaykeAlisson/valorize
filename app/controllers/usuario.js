@@ -11,9 +11,14 @@ module.exports = {
     };
 
     try {
+      const conexao = app.app.connectionFactory();
+      const usuarioRepository = new app.app.persistencia.UsuarioDAO(conexao);
       // Id do usuario que acaba de ser inserido
-      const id_usuario = app.app.model.usuario.cadastro(usuario);
-      res.status(201);
+      usuarioRepository.cadastro(usuario, function(erro, resultado){
+        console.log('usuario criado');
+        res.status(201);
+      });
+      // res.status(201);
      }catch (e) {
       res.status(500).json(e);
     }
