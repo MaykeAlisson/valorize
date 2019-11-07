@@ -6,7 +6,7 @@ module.exports = {
 
     const connection = app.app.persistencia.connectionFactory();
     const usuarioDAO = new app.app.persistencia.UsuarioDAO(connection);
-    // Id do usuario que acaba de ser inserido
+
     usuarioDAO.cadastro(usuario, function (erro, resultado) {
       if (erro) {
         res.status(500).json(erro);
@@ -29,12 +29,16 @@ module.exports = {
         res.status(500).send(erro);
       }
 
-      console.log(resultado);
+      let usuario;
 
-      const usuario = {
-        "id": resultado[0].id,
-        "nome": resultado[0].nome
-      };
+      if (resultado.length === 0) {
+        usuario = null;
+      } else {
+        usuario = {
+          "id": resultado[0].id,
+          "nome": resultado[0].nome
+        };
+      }
 
       if (usuario === null) {
         res.status(400).json({
@@ -48,10 +52,10 @@ module.exports = {
           expiresIn: '6h'
         });
 
-         const response = {
-           "idUser": usuario.id,
-           "userName": usuario.nome,
-           "token": token
+        const response = {
+          "idUser": usuario.id,
+          "userName": usuario.nome,
+          "token": token
         };
 
         res.status(200).json(response);
@@ -66,13 +70,15 @@ module.exports = {
 
     const usuario = req.body;
 
-    try {
-      app.app.model.usuario.atualiza(usuario);
-      res.status(200);
-    } catch (e) {
-      res.status(500).json(e);
-    }
+    const connection = app.app.persistencia.connectionFactory();
+    const usuarioDAO = new app.app.persistencia.UsuarioDAO(connection);
 
+    usuarioDAO.atualiza(usuario, function (erro, resultado) {
+      if (erro)
+        res.status(500).send(erro);
+
+      res.status(200);
+    });
 
   },
 

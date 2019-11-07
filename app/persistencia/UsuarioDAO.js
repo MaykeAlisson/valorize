@@ -5,38 +5,21 @@ function UsuarioDAO(connection) {
 const mysql = require('mysql');
 
 UsuarioDAO.prototype.cadastro = function (usuario, callback) {
-  this._connection.query('INSERT INTO usuario SET ? ', usuario, callback);
+  let query = `INSERT INTO usuario SET ? `;
+  this._connection.query(query, usuario, callback);
 };
 
-UsuarioDAO.prototype.login = function (email, senha , callback){
-  this._connection.query('SELECT id, nome FROM usuario WHERE email = ' + mysql.escape(email) + ' AND senha = ' + mysql.escape(senha) + ' ', callback);
+UsuarioDAO.prototype.login = function (email, senha, callback) {
+  let query = `SELECT id, nome 
+               FROM usuario WHERE email = ${mysql.escape(email)}  
+               AND senha = ${mysql.escape(senha)}`;
+  this._connection.query(query, callback);
 };
-// login(usuario){
-//
-//   const email = usuario["email"];
-//   const senha = usuario["senha"];
-//   const emailBanco = "maykealison@gmail.com";
-//   const senhaBanco = "12345";
-//   // verifica se usuario e senha correto no banco
-//   if(email === emailBanco && senha === senhaBanco){
-//     const dadosUsuario = {
-//       id: 1,
-//       nome: 'Mayke Alisson',
-//     };
-//
-//     return dadosUsuario;
-//   }
-//
-//   return null
-//
-// },
-//
-// atualiza(usuario){
-//
-//   // atualiza o usuario
-//
-// },
 
+UsuarioDAO.prototype.atualiza = function (usuario, callback) {
+  let query = `UPDATE usuario ${mysql.escape(usuario.id)}`;
+  this._connection.query(query, callback)
+};
 
 module.exports = function () {
   return UsuarioDAO;
