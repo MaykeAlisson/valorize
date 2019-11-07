@@ -1,0 +1,236 @@
+-- CREATE
+
+CREATE DATABASE valorize
+DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+USE valorize;
+
+-- tabela de usuario
+CREATE TABLE usuario(
+id BIGINT UNIQUE AUTO_INCREMENT NOT NULL,
+nome VARCHAR(50) NOT NULL,
+email VARCHAR(70) UNIQUE NOT NULL,
+sexo ENUM('M','F') NOT NULL,
+nascimento DATE NOT NULL,
+senha VARCHAR(100) NOT NULL,
+ativo ENUM('S','N') NOT NULL DEFAULT 'S',
+criacao DATETIME DEFAULT CURRENT_TIMESTAMP
+)engine=MyISAM default charset=utf8 collate=utf8_unicode_ci;
+
+-- tabela conta (dinheiro, cartao de credito, banco, etc...)
+CREATE TABLE conta(
+id BIGINT UNIQUE AUTO_INCREMENT NOT NULL,
+id_usuario BIGINT,
+descricao VARCHAR(100) NOT NULL,
+criacao DATETIME DEFAULT CURRENT_TIMESTAMP
+)engine=MyISAM default charset=utf8 collate=utf8_unicode_ci;
+
+-- tabela categoria (alimentacao, transporte, enterterimento etc..)
+CREATE TABLE categoria(
+id BIGINT UNIQUE AUTO_INCREMENT NOT NULL,
+descricao VARCHAR(100),
+operacao ENUM('DEBIT','CREDIT') NOT NULL,
+id_usuario BIGINT,
+criacao DATETIME DEFAULT CURRENT_TIMESTAMP
+)engine=MyISAM default charset=utf8 collate=utf8_unicode_ci;
+
+-- tabela lancamento (toda compra ou recebimento/ entrada ou saida)
+CREATE TABLE lancamento(
+id BIGINT UNIQUE AUTO_INCREMENT NOT NULL,
+valor DECIMAL NOT NULL,
+dia DATE NOT NULL,
+descricao VARCHAR(100) NOT NULL,
+tags VARCHAR(30),
+note VARCHAR(150),
+id_usuario BIGINT NOT NULL,
+id_conta BIGINT NOT NULL,
+id_categoria BIGINT NOT NULL,
+criacao DATETIME DEFAULT CURRENT_TIMESTAMP
+)engine=MyISAM default charset=utf8 collate=utf8_unicode_ci;
+
+ALTER TABLE usuario ENGINE=INNODB;
+ALTER TABLE conta ENGINE=INNODB;
+ALTER TABLE categoria ENGINE=INNODB;
+ALTER TABLE lancamento ENGINE=INNODB;
+
+-- CONSTRAINT PK
+
+ALTER TABLE usuario ADD CONSTRAINT PK_USUARIO PRIMARY KEY (id);
+ALTER TABLE conta ADD CONSTRAINT PK_CONTA PRIMARY KEY (id);
+ALTER TABLE categoria ADD CONSTRAINT PK_CATEGORIA PRIMARY KEY (id);
+ALTER TABLE lancamento ADD CONSTRAINT PK_LANCAMENTO PRIMARY KEY (id);
+
+-- CONSTRAINT FK
+
+ALTER TABLE conta ADD CONSTRAINT id_fk_usuario_conta FOREIGN KEY(id_usuario) REFERENCES usuario(id);
+ALTER TABLE categoria ADD CONSTRAINT id_fk_usuario_categoria FOREIGN KEY(id_usuario) REFERENCES usuario(id);
+ALTER TABLE lancamento ADD CONSTRAINT id_fk_usuario_lancamento FOREIGN KEY(id_usuario) REFERENCES usuario(id);
+ALTER TABLE lancamento ADD CONSTRAINT id_fk_conta_lancamento FOREIGN KEY(id_conta) REFERENCES conta(id);
+ALTER TABLE lancamento ADD CONSTRAINT id_fk_categoria_lancamento FOREIGN KEY(id_categoria) REFERENCES categoria(id);
+
+
+-- UPDATE
+
+ALTER TABLE redesenhe.usuario ADD nascimento DATE NOT NULL;
+
+ALTER TABLE redesenhe.usuario CHANGE ativo data_bloqueio DATETIME NULL;
+ALTER TABLE redesenhe.usuario MODIFY COLUMN data_bloqueio DATETIME NULL;
+
+ALTER TABLE redesenhe.lancamento ADD recorrente char(1);
+
+
+-- INSET
+
+INSERT INTO redesenhe.usuario
+(nome, email, senha, data_bloqueio, criacao, nascimento)
+VALUES('Mayke ALisson', 'maykealison@gmail.com', '123456', '', CURRENT_TIMESTAMP, '');
+
+
+-- Categorias
+INSERT INTO redesenhe.categoria (descricao, operacao, id_usuario, criacao)
+VALUES('Enterterimento', 'DEBIT', 1, CURRENT_TIMESTAMP);
+INSERT INTO redesenhe.categoria (descricao, operacao, id_usuario, criacao)
+VALUES('Investimento', 'DEBIT', 1, CURRENT_TIMESTAMP);
+INSERT INTO redesenhe.categoria (descricao, operacao, id_usuario, criacao)
+VALUES('Alimentação', 'DEBIT', 1, CURRENT_TIMESTAMP);
+INSERT INTO redesenhe.categoria (descricao, operacao, id_usuario, criacao)
+VALUES('Agrado', 'DEBIT', 1, CURRENT_TIMESTAMP);
+INSERT INTO redesenhe.categoria (descricao, operacao, id_usuario, criacao)
+VALUES('Transporte', 'DEBIT', 1, CURRENT_TIMESTAMP);
+INSERT INTO redesenhe.categoria (descricao, operacao, id_usuario, criacao)
+VALUES('Consorcio', 'DEBIT', 1, CURRENT_TIMESTAMP);
+INSERT INTO redesenhe.categoria (descricao, operacao, id_usuario, criacao)
+VALUES('Salario', 'CREDIT', 1, CURRENT_TIMESTAMP);
+INSERT INTO redesenhe.categoria (descricao, operacao, id_usuario, criacao)
+VALUES('Necessidade Basica', 'DEBIT', 1, CURRENT_TIMESTAMP);
+
+
+
+-- Contas
+INSERT INTO redesenhe.conta (id_usuario, descricao, criacao)
+VALUES(1, 'Salario Arcom', CURRENT_TIMESTAMP);
+INSERT INTO redesenhe.conta (id_usuario, descricao, criacao)
+VALUES(1, 'EasyInvest', CURRENT_TIMESTAMP);
+INSERT INTO redesenhe.conta (id_usuario, descricao, criacao)
+VALUES(1, 'Corretora Rico', CURRENT_TIMESTAMP);
+INSERT INTO redesenhe.conta (id_usuario, descricao, criacao)
+VALUES(1, 'Cartão Carrefour', CURRENT_TIMESTAMP);
+INSERT INTO redesenhe.conta (id_usuario, descricao, criacao)
+VALUES(1, 'Nubanck', CURRENT_TIMESTAMP);
+INSERT INTO redesenhe.conta (id_usuario, descricao, criacao)
+VALUES(1, 'Cartão Nubanck', CURRENT_TIMESTAMP);
+INSERT INTO redesenhe.conta (id_usuario, descricao, criacao)
+VALUES(1, 'Cartão CeA', CURRENT_TIMESTAMP);
+INSERT INTO redesenhe.conta (id_usuario, descricao, criacao)
+VALUES(1, 'Consorcio Luiza', CURRENT_TIMESTAMP);
+INSERT INTO redesenhe.conta (id_usuario, descricao, criacao)
+VALUES(1, 'Capitalização Caixa', CURRENT_TIMESTAMP);
+INSERT INTO redesenhe.conta (id_usuario, descricao, criacao)
+VALUES(1, 'Capitalização Santander', CURRENT_TIMESTAMP);
+
+
+-- Lancamentos
+INSERT INTO redesenhe.lancamento (valor, dia, descricao, tags, note, id_usuario, id_conta, id_categoria, criacao, recorrente)
+VALUES(588.40, '2019-08-19', 'Consorcio magazine Luiza', 'consorcioLuiza', '', 1, 8, 6, CURRENT_TIMESTAMP, 'S');
+INSERT INTO redesenhe.lancamento (valor, dia, descricao, tags, note, id_usuario, id_conta, id_categoria, criacao, recorrente)
+VALUES(2.200, '2019-08-01', 'Salario', 'salarioArcom', '', 1, 1, 7, CURRENT_TIMESTAMP, 'S');
+INSERT INTO redesenhe.lancamento (valor, dia, descricao, tags, note, id_usuario, id_conta, id_categoria, criacao, recorrente)
+VALUES(70, '2019-08-02', 'Gasolina', 'combustivelCarro', '', 1, 1, 5, CURRENT_TIMESTAMP, 'N');
+INSERT INTO redesenhe.lancamento (valor, dia, descricao, tags, note, id_usuario, id_conta, id_categoria, criacao, recorrente)
+VALUES(340.80, '2019-08-03', 'Compra', 'compraMes', '', 1, 1, 8, CURRENT_TIMESTAMP, 'N');
+INSERT INTO redesenhe.lancamento (valor, dia, descricao, tags, note, id_usuario, id_conta, id_categoria, criacao, recorrente)
+VALUES(15, '2019-08-01', 'Credito Celular', 'creditoCelular', '', 1, 1, 8, CURRENT_TIMESTAMP, 'S');
+INSERT INTO redesenhe.lancamento (valor, dia, descricao, tags, note, id_usuario, id_conta, id_categoria, criacao, recorrente)
+VALUES(60, '2019-08-06', 'Tesouro Direto 2045', 'aposentadoria', '', 1, 2, 2, CURRENT_TIMESTAMP, 'N');
+INSERT INTO redesenhe.lancamento (valor, dia, descricao, tags, note, id_usuario, id_conta, id_categoria, criacao, recorrente)
+VALUES(200, '2019-08-06', 'Banco Inter', 'aposentadoria', '', 1, 3, 2, CURRENT_TIMESTAMP, 'N');
+INSERT INTO redesenhe.lancamento (valor, dia, descricao, tags, note, id_usuario, id_conta, id_categoria, criacao, recorrente)
+VALUES(50, '2019-08-06', 'Tesouro Direto 2020', 'ferias2020', '', 1, 2, 2, CURRENT_TIMESTAMP, 'N');
+
+
+INSERT INTO redesenhe.lancamento (valor, dia, descricao, tags, note, id_usuario, id_conta, id_categoria, criacao, recorrente)
+VALUES(40, '2019-07-19', 'Pizza', 'pizza', '', 1, 1, 3, CURRENT_TIMESTAMP, 'N');
+INSERT INTO redesenhe.lancamento (valor, dia, descricao, tags, note, id_usuario, id_conta, id_categoria, criacao, recorrente)
+VALUES(26, '2019-07-12', 'Pastel', 'pastelfeira', '', 1, 1, 3, CURRENT_TIMESTAMP, 'N');
+INSERT INTO redesenhe.lancamento (valor, dia, descricao, tags, note, id_usuario, id_conta, id_categoria, criacao, recorrente)
+VALUES(300, '2019-07-01', 'Compra Mes', 'compraMes', '', 1, 1, 8, CURRENT_TIMESTAMP, 'N');
+INSERT INTO redesenhe.lancamento (valor, dia, descricao, tags, note, id_usuario, id_conta, id_categoria, criacao, recorrente)
+VALUES(588.40, '2019-07-19', 'Consorcio magazine Luiza', 'consorcioLuiza', '', 1, 8, 6, CURRENT_TIMESTAMP, 'S');
+INSERT INTO redesenhe.lancamento (valor, dia, descricao, tags, note, id_usuario, id_conta, id_categoria, criacao, recorrente)
+VALUES(60, '2019-07-06', 'Tesouro Direto 2045', 'aposentadoria', '', 1, 2, 2, CURRENT_TIMESTAMP, 'N');
+INSERT INTO redesenhe.lancamento (valor, dia, descricao, tags, note, id_usuario, id_conta, id_categoria, criacao, recorrente)
+VALUES(200, '2019-07-06', 'Banco Inter', 'aposentadoria', '', 1, 3, 2, CURRENT_TIMESTAMP, 'N');
+INSERT INTO redesenhe.lancamento (valor, dia, descricao, tags, note, id_usuario, id_conta, id_categoria, criacao, recorrente)
+VALUES(50, '2019-07-06', 'Tesouro Direto 2020', 'ferias2020', '', 1, 2, 2, CURRENT_TIMESTAMP, 'N');
+
+
+INSERT INTO redesenhe.lancamento (valor, dia, descricao, tags, note, id_usuario, id_conta, id_categoria, criacao, recorrente)
+VALUES(65, '2019-06-01', 'Boneca Laura', 'brinquedoLaura', '', 1, 6, 4, CURRENT_TIMESTAMP, 'N');
+INSERT INTO redesenhe.lancamento (valor, dia, descricao, tags, note, id_usuario, id_conta, id_categoria, criacao, recorrente)
+VALUES(588.40, '2019-06-10', 'Consorcio magazine Luiza', 'consorcioLuiza', '', 1, 8, 6, CURRENT_TIMESTAMP, 'S');
+INSERT INTO redesenhe.lancamento (valor, dia, descricao, tags, note, id_usuario, id_conta, id_categoria, criacao, recorrente)
+VALUES(120, '2019-06-12', 'Suplemento', 'hulk', '', 1, 1, 4, CURRENT_TIMESTAMP, 'N');
+INSERT INTO redesenhe.lancamento (valor, dia, descricao, tags, note, id_usuario, id_conta, id_categoria, criacao, recorrente)
+VALUES(60, '2019-06-06', 'Tesouro Direto 2045', 'aposentadoria', '', 1, 2, 2, CURRENT_TIMESTAMP, 'N');
+INSERT INTO redesenhe.lancamento (valor, dia, descricao, tags, note, id_usuario, id_conta, id_categoria, criacao, recorrente)
+VALUES(200, '2019-06-06', 'Banco Inter', 'aposentadoria', '', 1, 3, 2, CURRENT_TIMESTAMP, 'N');
+INSERT INTO redesenhe.lancamento (valor, dia, descricao, tags, note, id_usuario, id_conta, id_categoria, criacao, recorrente)
+VALUES(50, '2019-06-06', 'Tesouro Direto 2020', 'ferias2020', '', 1, 2, 2, CURRENT_TIMESTAMP, 'N');
+
+
+INSERT INTO redesenhe.lancamento (valor, dia, descricao, tags, note, id_usuario, id_conta, id_categoria, criacao, recorrente)
+VALUES(588.40, '2019-05-19', 'Consorcio magazine Luiza', 'consorcioLuiza', '', 1, 8, 6, CURRENT_TIMESTAMP, 'S');
+INSERT INTO redesenhe.lancamento (valor, dia, descricao, tags, note, id_usuario, id_conta, id_categoria, criacao, recorrente)
+VALUES(400, '2019-05-12', 'Pneu', 'pneu', '', 1, 1, 5, CURRENT_TIMESTAMP, 'N');
+INSERT INTO redesenhe.lancamento (valor, dia, descricao, tags, note, id_usuario, id_conta, id_categoria, criacao, recorrente)
+VALUES(60, '2019-05-10', 'Gasolina Moto', 'gasolinaMoto', '', 1, 1, 5, CURRENT_TIMESTAMP, 'N');
+INSERT INTO redesenhe.lancamento (valor, dia, descricao, tags, note, id_usuario, id_conta, id_categoria, criacao, recorrente)
+VALUES(60, '2019-05-06', 'Tesouro Direto 2045', 'aposentadoria', '', 1, 2, 2, CURRENT_TIMESTAMP, 'N');
+INSERT INTO redesenhe.lancamento (valor, dia, descricao, tags, note, id_usuario, id_conta, id_categoria, criacao, recorrente)
+VALUES(200, '2019-05-06', 'Banco Inter', 'aposentadoria', '', 1, 3, 2, CURRENT_TIMESTAMP, 'N');
+INSERT INTO redesenhe.lancamento (valor, dia, descricao, tags, note, id_usuario, id_conta, id_categoria, criacao, recorrente)
+VALUES(50, '2019-05-06', 'Tesouro Direto 2020', 'ferias2020', '', 1, 2, 2, CURRENT_TIMESTAMP, 'N');
+
+
+
+
+
+
+-- SELECT
+
+show tables ;
+desc categoria;
+
+
+select  us.id               as idUsuario
+        ,       us.nome             as nome
+        ,       us.data_bloqueio    as dataBloqueio
+
+        from    redesenhe.usuario us
+
+        where   us.email =           'maykealison@gmail.com'
+        and     us.senha =           '123456';
+
+
+select * from redesenhe.categoria
+where id_usuario = 2;
+
+------
+
+select * from valorize.conta;
+
+select * from redesenhe.categoria;
+
+select * from valorize.usuario;
+
+delete from lancamento where id = 3;
+
+select * from redesenhe.lancamento;
+
+
+
+
+
+
+
+
