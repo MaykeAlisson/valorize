@@ -11,7 +11,7 @@ module.exports = function (app) {
   });
 
   app.post('/api/v1/usuario/atualiza', verifyJWT, (req, res, next) => {
-    app.app.controllers.usuario.atualiza(app, req, res, next);
+    app.app.controllers.usuario.atualiza(app, req, res);
   });
 
 };

@@ -28,21 +28,17 @@ LancamentoDAO.prototype.deletaPorId = function (idLancamento, callback) {
   this._connection.query(query, callback);
 };
 
-LancamentoDAO.
+LancamentoDAO.prototype.deletaPorCategoria = function(idCategoria, callback) {
+  let query = `DELETE lancamento 
+               WHERE id_categoria = ${mysql.escape(idCategoria)}`;
+  this._connection.query(query, callback);
+};
 
-  //
-  // deletaPorId(idLancamento){
-  //   // deleta pelo id do lancamento
-  // },
-  //
-  // deletaPorCategoria(idCategoria){
-  //   //deleta toda lancamento onde idCategoria
-  // },
-  //
-  // deletaPorIdConta(idConta){
-  //   // deleta toda lancamento onde idConta
-  // },
-
+LancamentoDAO.prototype.deletaPorConta = function (idConta, callback) {
+  let query = `DELETE lancamento
+               WHERE id_conta = ${mysql.escape(idConta)}`;
+  this._connection.query(query, callback);
+};
 
 module.exports = function () {
   return LancamentoDAO;

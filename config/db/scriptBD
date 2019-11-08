@@ -219,13 +219,13 @@ where id_usuario = 2;
 
 select * from valorize.conta;
 
-select * from redesenhe.categoria;
+select * from valorize.categoria;
 
 select * from valorize.usuario;
 
 delete from lancamento where id = 3;
 
-select * from redesenhe.lancamento;
+select * from valorize.lancamento;
 
 
 

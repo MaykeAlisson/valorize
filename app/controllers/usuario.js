@@ -49,7 +49,7 @@ module.exports = {
         require("dotenv-safe").config();
         const jwt = require('jsonwebtoken');
         const token = jwt.sign({usuario}, process.env.SECRET, {
-          expiresIn: '6h'
+          expiresIn: '10h'
         });
 
         const response = {
@@ -68,16 +68,17 @@ module.exports = {
 
   atualiza(app, req, res) {
 
+    const idUsuario = req.userId;
     const usuario = req.body;
 
     const connection = app.app.persistencia.connectionFactory();
     const usuarioDAO = new app.app.persistencia.UsuarioDAO(connection);
 
-    usuarioDAO.atualiza(usuario, function (erro, resultado) {
-      if (erro)
+    usuarioDAO.atualiza(idUsuario, usuario, function (erro, resultado) {
+      if (erro) {
         res.status(500).send(erro);
-
-      res.status(200);
+      }
+      res.status(200).send();
     });
 
   },
