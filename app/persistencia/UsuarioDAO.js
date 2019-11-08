@@ -18,7 +18,7 @@ UsuarioDAO.prototype.login = function (email, senha, callback) {
 
 UsuarioDAO.prototype.atualiza = function (usuario, callback) {
   let query = `UPDATE usuario ${mysql.escape(usuario.id)}`;
-  this._connection.query(query, callback)
+  this._connection.query(query, callback);
 };
 
 module.exports = function () {
