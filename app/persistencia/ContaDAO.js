@@ -12,12 +12,16 @@ ContaDAO.prototype.busca = function (idUsuario, callback) {
 };
 
 ContaDAO.prototype.cadastro = function (conta, callback) {
-  let query = `INSERT INTO conta SET ? `;
+  let query = `INSERT INTO conta
+               (id_usuario, descricao, criacao)
+               VALUES(${mysql.escape(conta.id_usuario)}, ${mysql.escape(conta.descricao)}, CURRENT_TIMESTAMP)`;
   this._connection.query(query, callback);
 };
 
 ContaDAO.prototype.atualiza = function(conta, callback) {
-  let query = `UPDATE conta ${mysql.escape(conta.id)}`;
+  let query = `UPDATE valorize.conta
+               SET id_usuario = ${mysql.escape(conta.id_usuario)}, descricao = ${mysql.escape(conta.descricao)}
+               WHERE id = ${mysql.escape(conta.id)}`;
   this._connection.query(query, callback);
 };
 

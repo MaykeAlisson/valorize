@@ -2,48 +2,67 @@ module.exports = {
 
   busca(app, req, res) {
 
-    try {
-      const idUsuario = req.userId;
-      const listaConta = app.app.model.conta.busca(idUsuario);
-      res.status(200).json(listaConta);
-    } catch (e) {
-      res.status(500).json(e);
-    }
+    const idUsuario = req.userId;
+
+    const connection = app.app.persistencia.connectionFactory();
+    const contaDAO = new app.app.persistencia.ContaDAO(connection);
+
+    contaDAO.busca(idUsuario, function (erro, resultado) {
+      if (erro) {
+        res.status(500).send();
+      }
+      res.status(200).json(resultado);
+    });
 
   },
 
-  cadastro(app, req, res){
+  cadastro(app, req, res) {
 
-    try {
-      const conta =  req.body;
-      app.app.model.conta.cadastro(conta);
-      res.status(201);
-    }catch (e) {
-      res.status(500).json(e);
-    }
+    const idUsuario = req.userId;
+    let conta = req.body;
 
-  },
+    conta = {...conta, id_usuario: idUsuario};
 
-  atualiza(app, req, res){
+    const connection = app.app.persistencia.connectionFactory();
+    const contaDAO = new app.app.persistencia.ContaDAO(connection);
 
-    try {
-      const conta = req.body;
-      app.app.model.conta.atualiza(conta);
-      res.status(200);
-    }catch (e) {
-      res.status(500).json(e);
-    }
+    contaDAO.cadastro(conta, function (erro, resultado) {
+      if (erro) {
+        res.status(500).send(erro);
+      }
+      res.status(201).send();
+    });
 
   },
 
-  deleta(app, req, res){
+  atualiza(app, req, res) {
+
+    const idUsuario = req.userId;
+    let conta = req.body;
+
+    conta = {...conta, id_usuario: idUsuario};
+
+    const connection = app.app.persistencia.connectionFactory();
+    const contaDAO = new app.app.persistencia.ContaDAO(connection);
+
+    contaDAO.atualiza(conta, function (erro, resultado) {
+      if (erro){
+        res.status(500).send(erro)
+      }
+      res.status(200).send();
+    });
+
+  },
+
+  // Todo nao implementado aguardando lancamentos para poder testar em cascata
+  deleta(app, req, res) {
 
     try {
       const idConta = req.body;
       app.app.model.lancamento.deletaPorIdConta(idConta);
       app.app.model.conta.deleta(idConta);
       res.status(200);
-    }catch (e) {
+    } catch (e) {
       res.status(500).json(e);
     }
   },

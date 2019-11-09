@@ -7,13 +7,11 @@ module.exports = {
 
     categoria = {...categoria, id_usuario: idUsuario};
 
-    console.log(categoria);
-
     const connection = app.app.persistencia.connectionFactory();
     const categoriaDAO = new app.app.persistencia.CategoriaDAO(connection);
 
     categoriaDAO.cadastro(categoria, function (erro, resultado) {
-      if (erro){
+      if (erro) {
         res.status(500).send(erro);
       }
       res.status(201).send();
@@ -24,24 +22,38 @@ module.exports = {
   busca(app, req, res) {
 
     const idUsuario = req.userId;
-    const listaCategoria = app.app.model.categoria.busca(idUsuario);
-    res.status(200).json(listaCategoria);
 
-    res.status(500).json(e);
+    const connection = app.app.persistencia.connectionFactory();
+    const categoriaDAO = new app.app.persistencia.CategoriaDAO(connection);
 
+    categoriaDAO.busca(idUsuario, function (erro, resultado) {
+      if (erro) {
+        res.status(500).send(erro);
+      }
+      res.status(200).json(resultado);
+    });
   },
 
   atualiza(app, req, res) {
 
-    try {
-      const categoria = req.body;
-      app.app.model.categoria.atualiza(categoria);
-      res.status(200);
-    } catch (e) {
-      res.status(500).json(e);
-    }
+    const idUsuario = req.userId;
+    let categoria = req.body;
+
+    categoria = {...categoria, id_usuario: idUsuario};
+
+    const connection = app.app.persistencia.connectionFactory();
+    const categoriaDAO = new app.app.persistencia.CategoriaDAO(connection);
+
+    categoriaDAO.atualiza(categoria, function(erro, resultado){
+      if (erro){
+        res.status(500).send(erro);
+      }
+      res.status(200).send();
+    });
+
   },
 
+  // Todo ainda nao implementado esperando implementar lancamento para teste em cascata
   deleta(app, req, res) {
 
     try {

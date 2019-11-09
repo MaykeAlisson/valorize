@@ -13,7 +13,9 @@ LancamentoDAO.prototype.lancamentosMes = function (idUsuario, primeiroDiaMes, ul
 };
 
 LancamentoDAO.prototype.cadastro = function (lancamento, callback) {
-  let query = `INSERT INTO lancamento SET ?`;
+  let query = `INSERT INTO valorize.lancamento
+               (valor, dia, descricao, tags, note, id_usuario, id_conta, id_categoria, criacao)
+               VALUES(${mysql.escape(lancamento.valor)}, ${mysql.escape(lancamento.dia)}, ${mysql.escape(lancamento.descricao)}, ${mysql.escape(lancamento.tags)}, ${mysql.escape(lancamento.note)}, ${mysql.escape(lancamento.id_usuario)}, ${mysql.escape(lancamento.id_conta)}, ${mysql.escape(lancamento.id_categoria)}, CURRENT_TIMESTAMP)`;
   this._connection.query(query, callback);
 };
 
