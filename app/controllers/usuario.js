@@ -11,7 +11,7 @@ module.exports = {
       if (erro) {
         res.status(500).json(erro);
       }
-      res.status(201);
+      res.status(201).send();
     });
 
   },
@@ -49,7 +49,7 @@ module.exports = {
         require("dotenv-safe").config();
         const jwt = require('jsonwebtoken');
         const token = jwt.sign({usuario}, process.env.SECRET, {
-          expiresIn: '10h'
+          expiresIn: '12h'
         });
 
         const response = {
