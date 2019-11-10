@@ -44,8 +44,8 @@ module.exports = {
     const connection = app.app.persistencia.connectionFactory();
     const categoriaDAO = new app.app.persistencia.CategoriaDAO(connection);
 
-    categoriaDAO.atualiza(categoria, function(erro, resultado){
-      if (erro){
+    categoriaDAO.atualiza(categoria, function (erro, resultado) {
+      if (erro) {
         res.status(500).send(erro);
       }
       res.status(200).send();
@@ -53,17 +53,29 @@ module.exports = {
 
   },
 
-  // Todo ainda nao implementado esperando implementar lancamento para teste em cascata
   deleta(app, req, res) {
 
-    try {
-      const idCategoria = req.body;
-      app.app.model.lancamento.deletaPorCategoria(idCategoria);
-      app.app.model.categoria.delete(idCategoria);
-      res.status(200);
-    } catch (e) {
-      res.status(500).json(e);
-    }
+    const idCategoria = req.body;
+    const idUsuario = req.userId;
+
+    const connection = app.app.persistencia.connectionFactory();
+    const categoriaDAO = new app.app.persistencia.CategoriaDAO(connection);
+    const lancamentoDAO = new app.app.persistencia.LancamentoDAO(connection);
+
+    lancamentoDAO.deletaPorCategoria(idCategoria, idUsuario, function (erro, resultado) {
+      if (erro) {
+        res.status(500).send(erro);
+      }
+
+      categoriaDAO.delete(idCategoria, function (erro, resultado) {
+        if (erro) {
+          res.status(500).send(erro);
+        }
+        res.status(200).send();
+      });
+
+    });
+
   },
 
 

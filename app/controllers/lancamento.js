@@ -39,25 +39,39 @@ module.exports = {
 
   atualiza(app, req, res) {
 
-    try {
-      const lancamento = req.body;
-      app.app.model.lancamento.atualiza(lancamento);
-      res.status(200);
-    } catch (e) {
-      res.status(500).json(e);
-    }
+    const idUsuario = req.userId;
+    let lancamento = req.body;
+
+    lancamento = {...lancamento, id_usuario: idUsuario};
+
+    const connection = app.app.persistencia.connectionFactory();
+    const lancamentoDAO = new app.app.persistencia.LancamentoDAO(connection);
+
+    lancamentoDAO.atualiza(lancamento, function (erro, resultado) {
+      if (erro) {
+        res.status(500).send();
+      }
+      res.status(200).send();
+    });
 
   },
 
   deleta(app, req, res) {
 
-    try {
-      const idLancamento = req.body;
-      app.app.model.lancamento.deletaPorId(idLancamento);
-      res.status(200);
-    } catch (e) {
-      res.status(500).json(e);
-    }
+    const idLancamento = req.body;
+    const idUsuario = req.userId;
+
+    const connection = app.app.persistencia.connectionFactory();
+    const lancamentoDAO = new app.app.persistencia.LancamentoDAO(connection);
+
+    lancamentoDAO.deletaPorId(idLancamento, idUsuario, function (erro, resultado) {
+      if (erro) {
+        res.status(500).send(erro);
+      }
+      res.status(200).send();
+    });
+
   },
+
 
 };

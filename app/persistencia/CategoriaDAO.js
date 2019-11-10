@@ -26,8 +26,8 @@ CategoriaDAO.prototype.atualiza = function (categoria, callback) {
 };
 
 CategoriaDAO.prototype.delete = function (idCategoria, callback) {
-  let query = `DELETE categoria
-               WHERE id = ${mysql.escape(idCategoria)}`;
+  let query = `DELETE FROM categoria
+               WHERE id = ${mysql.escape(idCategoria.id)}`;
   this._connection.query(query, callback);
 };
 
