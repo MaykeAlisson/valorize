@@ -1,8 +1,15 @@
 module.exports = {
 
   cadastro(app, req, res) {
+    const bcrypt = require('bcryptjs');
 
-    const usuario = req.body;
+    let usuario = req.body;
+
+    const password = usuario.senha;
+    const salt = bcrypt.genSaltSync(10);
+    const hash = bcrypt.hashSync(password, salt);
+
+    usuario.senha = hash;
 
     const connection = app.app.persistencia.connectionFactory();
     const usuarioDAO = new app.app.persistencia.UsuarioDAO(connection);
@@ -17,6 +24,7 @@ module.exports = {
   },
 
   login(app, req, res) {
+    const bcrypt = require('bcryptjs');
 
     const email = req.body.email;
     const senha = req.body.senha;
@@ -24,7 +32,7 @@ module.exports = {
     const connection = app.app.persistencia.connectionFactory();
     const usuarioDAO = new app.app.persistencia.UsuarioDAO(connection);
 
-    usuarioDAO.login(email, senha, function (erro, resultado) {
+    usuarioDAO.login(email, function (erro, resultado) {
       if (erro) {
         res.status(500).send(erro);
       }
@@ -34,6 +42,14 @@ module.exports = {
       if (resultado.length === 0) {
         usuario = null;
       } else {
+        const db_password = resultado[0].senha; // Veio da base de dados.
+
+        if(!bcrypt.compareSync(senha, db_password)){
+          res.status(400).json({
+            success: false,
+            message: 'Autenticação do Usuário falhou. E-mail ou Senha incorreta!'
+          });
+        }
         usuario = {
           "id": resultado[0].id,
           "nome": resultado[0].nome

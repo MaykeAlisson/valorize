@@ -9,10 +9,9 @@ UsuarioDAO.prototype.cadastro = function (usuario, callback) {
   this._connection.query(query, usuario, callback);
 };
 
-UsuarioDAO.prototype.login = function (email, senha, callback) {
-  let query = `SELECT id, nome 
-               FROM usuario WHERE email = ${mysql.escape(email)}  
-               AND senha = ${mysql.escape(senha)}`;
+UsuarioDAO.prototype.login = function (email, callback) {
+  let query = `SELECT id, nome, senha 
+               FROM usuario WHERE email = ${mysql.escape(email)}`;
   this._connection.query(query, callback);
 };
 
