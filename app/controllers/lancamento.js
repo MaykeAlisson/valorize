@@ -1,9 +1,10 @@
 module.exports = {
 
   lancamentosMes(app, req, res) {
+    const utilData = require('../../config/util/UtilDate');
 
-    const primeiroDiaMes = '2019-11-01';
-    const ultimoDiaMes = '2019-11-30';
+    const primeiroDiaMes = utilData.primeiroDiaMes();
+    const ultimoDiaMes = utilData.ultimoDiaMes();
     const idUsuario = req.userId;
 
     const connection = app.app.persistencia.connectionFactory();

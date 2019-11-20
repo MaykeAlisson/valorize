@@ -5,10 +5,20 @@ function LancamentoDAO(connection) {
 const mysql = require('mysql');
 
 LancamentoDAO.prototype.lancamentosMes = function (idUsuario, primeiroDiaMes, ultimoDiaMes, callback) {
-  let query = `SELECT *
-               FROM lancamento
-               WHERE id_usuario = ${mysql.escape(idUsuario)}
-               AND dia BETWEEN ${mysql.escape(primeiroDiaMes)} AND ${mysql.escape(ultimoDiaMes)}`;
+  let query = `SELECT lc.id 
+              , lc.valor
+              , date_format(\`dia\`,'%d-%m-%Y') as dia
+              , lc.descricao
+              , co.descricao AS conta
+              , ca.descricao AS categoria
+              , ca.operacao
+              FROM lancamento lc
+              JOIN conta co
+              ON co.id = lc.id_conta
+              JOIN categoria ca
+              ON ca.id = lc.id_categoria
+              WHERE lc.id_usuario = ${mysql.escape(idUsuario)}
+              AND lc.dia between ${mysql.escape(primeiroDiaMes)} AND ${mysql.escape(ultimoDiaMes)}`;
   this._connection.query(query, callback);
 };
 
