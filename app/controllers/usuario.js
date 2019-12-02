@@ -3,6 +3,20 @@ module.exports = {
   cadastro(app, req, res) {
     const bcrypt = require('bcryptjs');
 
+    req.assert('nome', 'Nome obrigatorio').notEmpty();
+    req.assert('sexo', 'Sexo obrigatorio').notEmpty();
+    req.assert('nascimento', 'Nascimento obrigatorio').notEmpty();
+    req.assert('email', 'Email obrigatorio').notEmpty().isEmail();
+    req.assert('senha', 'senha obrigatorio').notEmpty();
+
+    const erros = req.validationErrors();
+
+    if (erros){
+      console.log('Erros de validacao encontados cadastro usuario');
+      res.status(400).send(erros);
+      return;
+    }
+
     let usuario = req.body;
 
     const password = usuario.senha;
@@ -17,6 +31,7 @@ module.exports = {
     usuarioDAO.cadastro(usuario, function (erro, resultado) {
       if (erro) {
         res.status(500).json(erro);
+        return;
       }
       res.status(201).send();
     });
@@ -25,6 +40,17 @@ module.exports = {
 
   login(app, req, res) {
     const bcrypt = require('bcryptjs');
+
+    req.assert('email', 'Email obrigatorio').notEmpty().isEmail();
+    req.assert('senha', 'Senha obrigatorio').notEmpty();
+
+    const erros = req.validationErrors();
+
+    if (erros){
+      console.log('Erros de validacao encontados login usuario');
+      res.status(400).send(erros);
+      return;
+    }
 
     const email = req.body.email;
     const senha = req.body.senha;
@@ -35,6 +61,7 @@ module.exports = {
     usuarioDAO.login(email, function (erro, resultado) {
       if (erro) {
         res.status(500).send(erro);
+        return;
       }
 
       let usuario;
@@ -49,6 +76,7 @@ module.exports = {
             success: false,
             message: 'Autenticação do Usuário falhou. E-mail ou Senha incorreta!'
           });
+          return;
         }
         usuario = {
           "id": resultado[0].id,
@@ -84,6 +112,20 @@ module.exports = {
 
   atualiza(app, req, res) {
 
+    req.assert('nascimento', 'Nascimento obrigatorio').notEmpty();
+    req.assert('email', 'Email obrigatorio').notEmpty().isEmail();
+    req.assert('nome', 'Nome obrigatorio').notEmpty();
+    req.assert('senha', 'senha obrigatorio').notEmpty();
+    req.assert('sexo', 'Sexo obrigatorio').notEmpty();
+
+    const erros = req.validationErrors();
+
+    if (erros){
+      console.log('Erros de validacao encontados atualiza usuario');
+      res.status(400).send(erros);
+      return;
+    }
+
     const idUsuario = req.userId;
     const usuario = req.body;
 
@@ -93,6 +135,7 @@ module.exports = {
     usuarioDAO.atualiza(idUsuario, usuario, function (erro, resultado) {
       if (erro) {
         res.status(500).send(erro);
+        return;
       }
       res.status(200).send();
     });

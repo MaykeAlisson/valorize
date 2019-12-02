@@ -2,6 +2,7 @@
 const express = require('express');
 const consign = require('consign'); // Auto load
 const bodyParser = require('body-parser');
+const expressValidator = require('express-validator');
 
 // Iniciando express na var app
 const app = express();
@@ -11,6 +12,9 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // parse application/json
 app.use(bodyParser.json());
+
+// validando campos
+app.use(expressValidator());
 
 // Definindo arquivos staticos
 app.use(express.static('./app/public'));
