@@ -145,6 +145,81 @@ module.exports = {
 
   },
 
+  maiorReceitaMes(app, req, res){
+    const utilData = require('../../config/util/UtilDate');
 
+    const primeiroDiaMes = utilData.primeiroDiaMes();
+    const ultimoDiaMes = utilData.ultimoDiaMes();
+
+    const idUsuario = req.userId;
+
+    const connection = app.app.persistencia.connectionFactory();
+    const lancamentoDAO = new app.app.persistencia.LancamentoDAO(connection);
+
+    lancamentoDAO.maiorReceitaMes(idUsuario, primeiroDiaMes, ultimoDiaMes, function(erro, resultado){
+      if (erro) {
+        res.status(500).send(erro);
+        return;
+      }
+      res.status(200).json(resultado);
+    });
+  },
+
+  todasReceitasMes(app, req, res){
+    const utilData = require('../../config/util/UtilDate');
+
+    const primeiroDiaMes = utilData.primeiroDiaMes();
+    const ultimoDiaMes = utilData.ultimoDiaMes();
+
+    const idUsuario = req.userId;
+
+    const connection = app.app.persistencia.connectionFactory();
+    const lancamentoDAO = new app.app.persistencia.LancamentoDAO(connection);
+
+    lancamentoDAO.todasReceitasMes(idUsuario, primeiroDiaMes, ultimoDiaMes, function(erro, resultado){
+      if (erro) {
+        res.status(500).send(erro);
+        return;
+      }
+      res.status(200).json(resultado);
+    });
+  },
+
+  todasDespesasMes(app, req, res){
+    const utilData = require('../../config/util/UtilDate');
+
+    const primeiroDiaMes = utilData.primeiroDiaMes();
+    const ultimoDiaMes = utilData.ultimoDiaMes();
+
+    const idUsuario = req.userId;
+
+    const connection = app.app.persistencia.connectionFactory();
+    const lancamentoDAO = new app.app.persistencia.LancamentoDAO(connection);
+
+    lancamentoDAO.todasDespesasMes(idUsuario, primeiroDiaMes, ultimoDiaMes, function(erro, resultado){
+      if (erro) {
+        res.status(500).send(erro);
+        return;
+      }
+      res.status(200).json(resultado);
+    });
+  },
+
+
+  listaTagsPorUsuario(app, req, res){
+
+    const idUsuario = req.userId;
+
+    const connection = app.app.persistencia.connectionFactory();
+    const lancamentoDAO = new app.app.persistencia.LancamentoDAO(connection);
+
+    lancamentoDAO.todasTagsPorUsuario(idUsuario, function(erro, resultado){
+      if (erro) {
+        res.status(500).send(erro);
+        return;
+      }
+      res.status(200).json(resultado);
+    });
+  },
 
 };

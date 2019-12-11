@@ -37,7 +37,7 @@ criacao DATETIME DEFAULT CURRENT_TIMESTAMP
 -- tabela lancamento (toda compra ou recebimento/ entrada ou saida)
 CREATE TABLE lancamento(
 id BIGINT UNIQUE AUTO_INCREMENT NOT NULL,
-valor DECIMAL NOT NULL,
+valor DECIMAL(10,2) NOT NULL,
 dia DATE NOT NULL,
 descricao VARCHAR(100) NOT NULL,
 tags VARCHAR(30),
@@ -97,6 +97,8 @@ INSERT INTO valorize.categoria (descricao, operacao, id_usuario, criacao)
 VALUES('Salario', 'CREDIT', 1, CURRENT_TIMESTAMP);
 INSERT INTO valorize.categoria (descricao, operacao, id_usuario, criacao)
 VALUES('Necessidade Basica', 'DEBIT', 1, CURRENT_TIMESTAMP);
+INSERT INTO valorize.categoria (descricao, operacao, id_usuario, criacao)
+VALUES('Renda Extra', 'CREDIT', 1, CURRENT_TIMESTAMP);
 
 
 
@@ -125,21 +127,21 @@ VALUES(1, 'Capitalização Santander', CURRENT_TIMESTAMP);
 
 -- Lancamentos
 INSERT INTO valorize.lancamento (valor, dia, descricao, tags, note, id_usuario, id_conta, id_categoria, criacao)
-VALUES(588.40, '2019-08-19', 'Consorcio magazine Luiza', 'consorcioLuiza', '', 1, 8, 6, CURRENT_TIMESTAMP);
+VALUES(58840, '2019-11-19', 'Consorcio magazine Luiza', 'consorcioLuiza', '', 1, 8, 6, CURRENT_TIMESTAMP);
 INSERT INTO valorize.lancamento (valor, dia, descricao, tags, note, id_usuario, id_conta, id_categoria, criacao)
-VALUES(2.200, '2019-08-01', 'Salario', 'salarioArcom', '', 1, 1, 7, CURRENT_TIMESTAMP);
+VALUES(2200, '2019-11-01', 'Salario', 'salarioArcom', '', 1, 1, 7, CURRENT_TIMESTAMP);
 INSERT INTO valorize.lancamento (valor, dia, descricao, tags, note, id_usuario, id_conta, id_categoria, criacao)
-VALUES(70, '2019-08-02', 'Gasolina', 'combustivelCarro', '', 1, 1, 5, CURRENT_TIMESTAMP);
+VALUES(70, '2019-11-02', 'Gasolina', 'combustivelCarro', '', 1, 1, 5, CURRENT_TIMESTAMP);
 INSERT INTO valorize.lancamento (valor, dia, descricao, tags, note, id_usuario, id_conta, id_categoria, criacao)
-VALUES(340.80, '2019-08-03', 'Compra', 'compraMes', '', 1, 1, 8, CURRENT_TIMESTAMP);
+VALUES(34080, '2019-11-03', 'Compra', 'compraMes', '', 1, 1, 8, CURRENT_TIMESTAMP);
 INSERT INTO valorize.lancamento (valor, dia, descricao, tags, note, id_usuario, id_conta, id_categoria, criacao)
-VALUES(15, '2019-08-01', 'Credito Celular', 'creditoCelular', '', 1, 1, 8, CURRENT_TIMESTAMP);
+VALUES(15, '2019-11-01', 'Credito Celular', 'creditoCelular', '', 1, 1, 8, CURRENT_TIMESTAMP);
 INSERT INTO valorize.lancamento (valor, dia, descricao, tags, note, id_usuario, id_conta, id_categoria, criacao)
-VALUES(60, '2019-08-06', 'Tesouro Direto 2045', 'aposentadoria', '', 1, 2, 2, CURRENT_TIMESTAMP);
+VALUES(60, '2019-11-06', 'Tesouro Direto 2045', 'aposentadoria', '', 1, 2, 2, CURRENT_TIMESTAMP);
 INSERT INTO valorize.lancamento (valor, dia, descricao, tags, note, id_usuario, id_conta, id_categoria, criacao)
-VALUES(200, '2019-08-06', 'Banco Inter', 'aposentadoria', '', 1, 3, 2, CURRENT_TIMESTAMP);
+VALUES(200, '2019-11-06', 'Banco Inter', 'aposentadoria', '', 1, 3, 2, CURRENT_TIMESTAMP);
 INSERT INTO valorize.lancamento (valor, dia, descricao, tags, note, id_usuario, id_conta, id_categoria, criacao)
-VALUES(50, '2019-08-06', 'Tesouro Direto 2020', 'ferias2020', '', 1, 2, 2, CURRENT_TIMESTAMP);
+VALUES(50, '2019-11-06', 'Tesouro Direto 2020', 'ferias2020', '', 1, 2, 2, CURRENT_TIMESTAMP);
 
 
 INSERT INTO valorize.lancamento (valor, dia, descricao, tags, note, id_usuario, id_conta, id_categoria, criacao)
@@ -149,7 +151,7 @@ VALUES(26, '2019-07-12', 'Pastel', 'pastelfeira', '', 1, 1, 3, CURRENT_TIMESTAMP
 INSERT INTO valorize.lancamento (valor, dia, descricao, tags, note, id_usuario, id_conta, id_categoria, criacao)
 VALUES(300, '2019-07-01', 'Compra Mes', 'compraMes', '', 1, 1, 8, CURRENT_TIMESTAMP);
 INSERT INTO valorize.lancamento (valor, dia, descricao, tags, note, id_usuario, id_conta, id_categoria, criacao)
-VALUES(588.40, '2019-07-19', 'Consorcio magazine Luiza', 'consorcioLuiza', '', 1, 8, 6, CURRENT_TIMESTAMP);
+VALUES(58840, '2019-07-19', 'Consorcio magazine Luiza', 'consorcioLuiza', '', 1, 8, 6, CURRENT_TIMESTAMP);
 INSERT INTO valorize.lancamento (valor, dia, descricao, tags, note, id_usuario, id_conta, id_categoria, criacao)
 VALUES(60, '2019-07-06', 'Tesouro Direto 2045', 'aposentadoria', '', 1, 2, 2, CURRENT_TIMESTAMP);
 INSERT INTO valorize.lancamento (valor, dia, descricao, tags, note, id_usuario, id_conta, id_categoria, criacao)
@@ -161,7 +163,7 @@ VALUES(50, '2019-07-06', 'Tesouro Direto 2020', 'ferias2020', '', 1, 2, 2, CURRE
 INSERT INTO valorize.lancamento (valor, dia, descricao, tags, note, id_usuario, id_conta, id_categoria, criacao)
 VALUES(65, '2019-06-01', 'Boneca Laura', 'brinquedoLaura', '', 1, 6, 4, CURRENT_TIMESTAMP);
 INSERT INTO valorize.lancamento (valor, dia, descricao, tags, note, id_usuario, id_conta, id_categoria, criacao)
-VALUES(588.40, '2019-06-10', 'Consorcio magazine Luiza', 'consorcioLuiza', '', 1, 8, 6, CURRENT_TIMESTAMP);
+VALUES(58840, '2019-06-10', 'Consorcio magazine Luiza', 'consorcioLuiza', '', 1, 8, 6, CURRENT_TIMESTAMP);
 INSERT INTO valorize.lancamento (valor, dia, descricao, tags, note, id_usuario, id_conta, id_categoria, criacao)
 VALUES(120, '2019-06-12', 'Suplemento', 'hulk', '', 1, 1, 4, CURRENT_TIMESTAMP);
 INSERT INTO valorize.lancamento (valor, dia, descricao, tags, note, id_usuario, id_conta, id_categoria, criacao)
@@ -173,7 +175,7 @@ VALUES(50, '2019-06-06', 'Tesouro Direto 2020', 'ferias2020', '', 1, 2, 2, CURRE
 
 
 INSERT INTO valorize.lancamento (valor, dia, descricao, tags, note, id_usuario, id_conta, id_categoria, criacao)
-VALUES(588.40, '2019-05-19', 'Consorcio magazine Luiza', 'consorcioLuiza', '', 1, 8, 6, CURRENT_TIMESTAMP);
+VALUES(58840, '2019-05-19', 'Consorcio magazine Luiza', 'consorcioLuiza', '', 1, 8, 6, CURRENT_TIMESTAMP);
 INSERT INTO valorize.lancamento (valor, dia, descricao, tags, note, id_usuario, id_conta, id_categoria, criacao)
 VALUES(400, '2019-05-12', 'Pneu', 'pneu', '', 1, 1, 5, CURRENT_TIMESTAMP);
 INSERT INTO valorize.lancamento (valor, dia, descricao, tags, note, id_usuario, id_conta, id_categoria, criacao)
@@ -185,8 +187,12 @@ VALUES(200, '2019-05-06', 'Banco Inter', 'aposentadoria', '', 1, 3, 2, CURRENT_T
 INSERT INTO valorize.lancamento (valor, dia, descricao, tags, note, id_usuario, id_conta, id_categoria, criacao)
 VALUES(50, '2019-05-06', 'Tesouro Direto 2020', 'ferias2020', '', 1, 2, 2, CURRENT_TIMESTAMP);
 
-
-
+INSERT INTO valorize.lancamento (valor, dia, descricao, tags, note, id_usuario, id_conta, id_categoria, criacao)
+VALUES(300, '2019-12-07', 'emprestimo mae', 'extorno', '', 1, 5, 10, CURRENT_TIMESTAMP);
+INSERT INTO valorize.lancamento (valor, dia, descricao, tags, note, id_usuario, id_conta, id_categoria, criacao)
+VALUES(2000, '2019-11-01', 'Salario', 'salarioArcom', '', 1, 1, 7, CURRENT_TIMESTAMP);
+INSERT INTO valorize.lancamento (valor, dia, descricao, tags, note, id_usuario, id_conta, id_categoria, criacao)
+VALUES(120.85, '2019-12-06', 'Suplemento', 'hulk', '', 1, 1, 4, CURRENT_TIMESTAMP);
 
 
 
@@ -195,35 +201,95 @@ VALUES(50, '2019-05-06', 'Tesouro Direto 2020', 'ferias2020', '', 1, 2, 2, CURRE
 show tables ;
 desc categoria;
 
-
-select  us.id               as idUsuario
-        ,       us.nome             as nome
-        ,       us.data_bloqueio    as dataBloqueio
-
-        from    redesenhe.usuario us
-
-        where   us.email =           'maykealison@gmail.com'
-        and     us.senha =           '123456';
-
-
-select * from redesenhe.categoria
-where id_usuario = 2;
-
-------
-
 select * from valorize.conta;
 
 select * from valorize.categoria;
 
 select * from valorize.usuario;
 
-delete from lancamento where id = 3;
-
 select * from valorize.lancamento;
 
+-- Busca todos lancamento mes atual
+select	lc.id
+,		TRUNCATE(lc.valor,2) valor
+,		date_format(`dia`,'%d-%m-%Y') as dia
+,		lc.descricao
+,		co.descricao	as conta
+,		lc.id_conta
+,		ca.descricao	as categoria
+,		lc.id_categoria
+,		ca.operacao
+from	lancamento lc
+join	conta	co
+on	co.id = lc.id_conta
+join	categoria ca
+on	ca.id = lc.id_categoria
+where	lc.id_usuario = 1
+and	lc.dia between '2019-12-01' and '2019-12-30';
+
+-- Busca maior despesa mes
 
 
+-- Busca maior receita mes
+select MAX(l.valor) as valor,
+from lancamento l
+    inner join categoria c
+    on l.id_categoria   = c.id
+where c.operacao        = 'CREDIT'
+and l.dia between       '2019-12-01' and '2019-12-30'
+and l.id_usuario        = 1
+and c.id_usuario        = 1
 
+-- Busca total receita mes
+select SUM(l.valor) as rendimento
+from lancamento l
+    inner join categoria c
+    on l.id_categoria   = c.id
+where c.operacao        = 'CREDIT'
+and l.dia between       '2019-12-01' and '2019-12-30'
+and l.id_usuario        = 1
+and c.id_usuario        = 1;
+
+
+-- Busca todas receita mes
+select  l.descricao
+,		l.valor
+,		c.descricao as categoria
+,		co.descricao as conta
+,		date_format(`dia`,'%d-%m-%Y') as data
+from lancamento l
+    inner join categoria c
+    on l.id_categoria   = c.id
+    inner join conta co
+    on l.id_conta = co.id
+where c.operacao        = 'CREDIT'
+and l.dia between       '2019-12-01' and '2019-12-30'
+and l.id_usuario        = 1
+and c.id_usuario        = 1;
+
+
+-- Busca todas despesas mes
+select  l.descricao
+,		l.valor
+,		c.descricao as categoria
+,		co.descricao as conta
+,		date_format(`dia`,'%d-%m-%Y') as data
+from lancamento l
+    inner join categoria c
+    on l.id_categoria   = c.id
+    inner join conta co
+    on l.id_conta = co.id
+where c.operacao        = 'DEBIT'
+and l.dia between       '2019-12-01' and '2019-12-30'
+and l.id_usuario        = 1
+and c.id_usuario        = 1;
+
+-- Lista tags lancamento
+select	DISTINCT
+		tags
+from	lancamento
+where	id_usuario = 1
+and 	tags is not null;
 
 
 

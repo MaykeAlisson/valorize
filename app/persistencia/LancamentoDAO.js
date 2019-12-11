@@ -10,7 +10,9 @@ LancamentoDAO.prototype.lancamentosMes = function (idUsuario, primeiroDiaMes, ul
               , date_format(\`dia\`,'%d-%m-%Y') as dia
               , lc.descricao
               , co.descricao AS conta
+              , lc.id_conta
               , ca.descricao AS categoria
+              , lc.id_categoria
               , ca.operacao
               FROM lancamento lc
               JOIN conta co
@@ -69,6 +71,63 @@ LancamentoDAO.prototype.deletaPorConta = function (idConta, idUsuario, callback)
   let query = `DELETE FROM lancamento
                WHERE id_conta = ${mysql.escape(idConta)}
                AND id_usuario = ${mysql.escape(idUsuario)}`;
+  this._connection.query(query, callback);
+};
+
+LancamentoDAO.prototype.maiorReceitaMes = function (idUsuario, primeiroDiaMes, ultimoDiaMes, callback) {
+  let query = ` select MAX(l.valor) as valor
+                from lancamento l
+                inner join categoria c
+                on l.id_categoria    = c.id
+                where c.operacao     = 'CREDIT'
+                and l.dia between    ${mysql.escape(primeiroDiaMes)} and ${mysql.escape(ultimoDiaMes)}
+                and l.id_usuario     = ${mysql.escape(idUsuario)}
+                and c.id_usuario     = ${mysql.escape(idUsuario)}`;
+  this._connection.query(query, callback);
+};
+
+LancamentoDAO.prototype.todasReceitasMes = function (idUsuario, primeiroDiaMes, ultimoDiaMes, callback) {
+  let query = ` select  l.descricao
+              , l.valor
+              , c.descricao as categoria
+              , co.descricao as conta
+              , date_format(\`dia\`,'%d-%m-%Y') as data
+              from lancamento l
+              inner join categoria c
+              on l.id_categoria   = c.id
+              inner join conta co
+              on l.id_conta = co.id
+              where c.operacao        = 'CREDIT'
+              and l.dia between       ${mysql.escape(primeiroDiaMes)} and ${mysql.escape(ultimoDiaMes)}
+              and l.id_usuario        = ${mysql.escape(idUsuario)}
+              and c.id_usuario        = ${mysql.escape(idUsuario)}`;
+  this._connection.query(query, callback);
+};
+
+
+LancamentoDAO.prototype.todasDespesasMes = function (idUsuario, primeiroDiaMes, ultimoDiaMes, callback) {
+  let query = ` select  l.descricao
+              , l.valor
+              , c.descricao as categoria
+              , co.descricao as conta
+              , date_format(\`dia\`,'%d-%m-%Y') as data
+              from lancamento l
+              inner join categoria c
+              on l.id_categoria   = c.id
+              inner join conta co
+              on l.id_conta = co.id
+              where c.operacao        = 'DEBIT'
+              and l.dia between       ${mysql.escape(primeiroDiaMes)} and ${mysql.escape(ultimoDiaMes)}
+              and l.id_usuario        = ${mysql.escape(idUsuario)}
+              and c.id_usuario        = ${mysql.escape(idUsuario)}`;
+  this._connection.query(query, callback);
+};
+
+LancamentoDAO.prototype.todasTagsPorUsuario = function (idUsuario, callback) {
+  let query = ` select DISTINCT
+                tags
+                from  lancamento
+                where id_usuario = ${mysql.escape(idUsuario)}`;
   this._connection.query(query, callback);
 };
 
