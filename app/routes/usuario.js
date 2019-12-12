@@ -1,0 +1,17 @@
+module.exports = function (app) {
+
+  const verifyJWT = require('../../config/jwt').verifyJWT;
+
+  app.post('/api/v1/usuario/cadastro', function(req, res) {
+    app.app.controllers.usuario.cadastro(app, req, res);
+  });
+
+  app.post('/api/v1/usuario/login', function (req, res) {
+    app.app.controllers.usuario.login(app, req, res);
+  });
+
+  app.post('/api/v1/usuario/atualiza', verifyJWT, (req, res, next) => {
+    app.app.controllers.usuario.atualiza(app, req, res);
+  });
+
+};
