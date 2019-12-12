@@ -1,3 +1,6 @@
+// Import Logger
+const logger = require('../../config/util/logger.js');
+
 module.exports = {
 
   cadastro(app, req, res) {
@@ -30,6 +33,7 @@ module.exports = {
 
     usuarioDAO.cadastro(usuario, function (erro, resultado) {
       if (erro) {
+        logger.info('Erro ao Cadastrar usuario: ' + erro);
         res.status(500).json(erro);
         return;
       }
@@ -60,6 +64,7 @@ module.exports = {
 
     usuarioDAO.login(email, function (erro, resultado) {
       if (erro) {
+        logger.info('Erro ao realizar Login usuario: ' + erro);
         res.status(500).send(erro);
         return;
       }
@@ -93,7 +98,7 @@ module.exports = {
         require("dotenv-safe").config();
         const jwt = require('jsonwebtoken');
         const token = jwt.sign({usuario}, process.env.SECRET, {
-          expiresIn: '90d'
+          expiresIn: '12h'
         });
 
         const response = {
@@ -134,6 +139,7 @@ module.exports = {
 
     usuarioDAO.atualiza(idUsuario, usuario, function (erro, resultado) {
       if (erro) {
+        logger.info('Erro ao Atualizar usuario: ' + erro);
         res.status(500).send(erro);
         return;
       }

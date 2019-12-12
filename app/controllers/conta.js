@@ -1,3 +1,6 @@
+// Import Logger
+const logger = require('../../config/util/logger.js');
+
 module.exports = {
 
   busca(app, req, res) {
@@ -9,7 +12,8 @@ module.exports = {
 
     contaDAO.busca(idUsuario, function (erro, resultado) {
       if (erro) {
-        res.status(500).send();
+        logger.info('Erro ao Buscar Conta: ' + erro);
+        res.status(500).send(erro);
         return;
       }
       res.status(200).json(resultado);
@@ -39,6 +43,7 @@ module.exports = {
 
     contaDAO.cadastro(conta, function (erro, resultado) {
       if (erro) {
+        logger.info('Erro ao Cadastrar Conta: ' + erro);
         res.status(500).send(erro);
         return;
       }
@@ -70,6 +75,7 @@ module.exports = {
 
     contaDAO.atualiza(conta, function (erro, resultado) {
       if (erro){
+        logger.info('Erro ao Atualizar Conta: ' + erro);
         res.status(500).send(erro);
         return;
       }
@@ -78,7 +84,6 @@ module.exports = {
 
   },
 
-  // Todo nao implementado aguardando lancamentos para poder testar em cascata
   deleta(app, req, res) {
 
     req.assert('id', 'Id obrigatorio').notEmpty();
@@ -100,12 +105,14 @@ module.exports = {
 
     lancamentoDAO.deletaPorConta(idConta, idUsuario, function (erro, resultado) {
       if (erro) {
+        logger.info('Erro ao Deletar lancamento por Conta: ' + erro);
         res.status(500).send(erro);
         return;
       }
 
       contaDAO.deleta(idConta, function (erro, resultado) {
         if (erro){
+          logger.info('Erro ao Deletar Conta: ' + erro);
           res.status(500).send(erro);
           return;
         }

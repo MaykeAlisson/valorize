@@ -1,3 +1,6 @@
+// Import Logger
+const logger = require('../../config/util/logger.js');
+
 module.exports = {
 
   lancamentosMes(app, req, res) {
@@ -12,6 +15,7 @@ module.exports = {
 
     lancamentoDAO.lancamentosMes(idUsuario, primeiroDiaMes, ultimoDiaMes, function (erro, resultado) {
       if (erro) {
+        logger.info('Erro ao Buscar lancamento mes atual: ' + erro);
         res.status(500).send();
         return;
       }
@@ -46,6 +50,7 @@ module.exports = {
 
     lancamentoDAO.cadastro(lancamento, function (erro, resultado) {
       if (erro) {
+        logger.info('Erro ao Cadastrar  lancamento: ' + erro);
         res.status(500).send(erro);
         return;
       }
@@ -81,6 +86,7 @@ module.exports = {
 
     lancamentoDAO.atualiza(lancamento, function (erro, resultado) {
       if (erro) {
+        logger.info('Erro ao Atualizar lancamento: ' + erro);
         res.status(500).send();
         return;
       }
@@ -109,6 +115,7 @@ module.exports = {
 
     lancamentoDAO.deletaPorId(idLancamento, idUsuario, function (erro, resultado) {
       if (erro) {
+        logger.info('Erro ao Deletar lancamento por id: ' + erro);
         res.status(500).send(erro);
         return;
       }
@@ -137,6 +144,7 @@ module.exports = {
 
     lancamentoDAO.deletaPorCategoria(idCategoria, idUsuario, function (erro, resultado) {
       if (erro) {
+        logger.info('Erro ao Deletar lancamento por Categoria: ' + erro);
         res.status(500).send(erro);
         return;
       }
@@ -158,6 +166,7 @@ module.exports = {
 
     lancamentoDAO.maiorReceitaMes(idUsuario, primeiroDiaMes, ultimoDiaMes, function(erro, resultado){
       if (erro) {
+        logger.info('Erro ao Buscar aior Receita: ' + erro);
         res.status(500).send(erro);
         return;
       }
@@ -178,6 +187,7 @@ module.exports = {
 
     lancamentoDAO.todasReceitasMes(idUsuario, primeiroDiaMes, ultimoDiaMes, function(erro, resultado){
       if (erro) {
+        logger.info('Erro ao Buscar todas receitas' + erro);
         res.status(500).send(erro);
         return;
       }
@@ -198,6 +208,7 @@ module.exports = {
 
     lancamentoDAO.todasDespesasMes(idUsuario, primeiroDiaMes, ultimoDiaMes, function(erro, resultado){
       if (erro) {
+        logger.info('Erro ao Buscar todas despesas Mes: ' + erro);
         res.status(500).send(erro);
         return;
       }
@@ -215,6 +226,7 @@ module.exports = {
 
     lancamentoDAO.todasTagsPorUsuario(idUsuario, function(erro, resultado){
       if (erro) {
+        logger.info('Erro ao Listar todas tags por usuario: ' + erro);
         res.status(500).send(erro);
         return;
       }

@@ -1,3 +1,6 @@
+// Import Logger
+const logger = require('../../config/util/logger.js');
+
 module.exports = {
 
   cadastro(app, req, res) {
@@ -23,6 +26,7 @@ module.exports = {
 
     categoriaDAO.cadastro(categoria, function (erro, resultado) {
       if (erro) {
+        logger.info('Erro ao Cadastrar Categoria: ' + erro);
         res.status(500).send(erro);
         return;
       }
@@ -40,6 +44,7 @@ module.exports = {
 
     categoriaDAO.busca(idUsuario, function (erro, resultado) {
       if (erro) {
+        logger.info('Erro ao Buscar Categoria: ' + erro);
         res.status(500).send(erro);
         return;
       }
@@ -71,6 +76,7 @@ module.exports = {
 
     categoriaDAO.atualiza(categoria, function (erro, resultado) {
       if (erro) {
+        logger.info('Erro ao Atualizar Categoria: ' + erro);
         res.status(500).send(erro);
         return;
       }
@@ -101,12 +107,14 @@ module.exports = {
 
     lancamentoDAO.deletaPorCategoria(idCategoria, idUsuario, function (erro, resultado) {
       if (erro) {
+        logger.info('Erro ao Deletar lancamento por Categoria: ' + erro);
         res.status(500).send(erro);
         return;
       }
 
       categoriaDAO.delete(idCategoria, function (erro, resultado) {
         if (erro) {
+          logger.info('Erro ao deletar Categoria: ' + erro);
           res.status(500).send(erro);
           return;
         }
