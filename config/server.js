@@ -3,9 +3,13 @@ const express = require('express');
 const consign = require('consign'); // Auto load
 const bodyParser = require('body-parser');
 const expressValidator = require('express-validator');
+const cors = require('cors');
 
 // Iniciando express na var app
 const app = express();
+
+// Cors
+app.use(cors());
 
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: true }));
