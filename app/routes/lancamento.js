@@ -34,4 +34,12 @@ module.exports = function (app) {
     app.app.controllers.lancamento.listaTagsPorUsuario(app, req, res, next);
   });
 
+  app.get('/api/lancamento/v1/receita', verifyJWT, (req, res, next) => {
+    app.app.controllers.lancamento.receitaMes(app, req, res, next);
+  });
+
+  app.get('/api/lancamento/v1/despesa', verifyJWT, (req, res, next) => {
+    app.app.controllers.lancamento.despesaMes(app, req, res, next);
+  })
+
 };

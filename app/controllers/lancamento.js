@@ -234,4 +234,48 @@ module.exports = {
     });
   },
 
+  receitaMes(app, req, res){
+
+    const utilData = require('../../config/util/UtilDate');
+
+    const primeiroDiaMes = utilData.primeiroDiaMes();
+    const ultimoDiaMes = utilData.ultimoDiaMes();
+
+    const idUsuario = req.userId;
+
+    const connection = app.app.persistencia.connectionFactory();
+    const lancamentoDAO = new app.app.persistencia.LancamentoDAO(connection);
+
+    lancamentoDAO.buscaReceitaMes(idUsuario, primeiroDiaMes,ultimoDiaMes,function(erro, resultado){
+      if (erro) {
+        logger.info('Erro ao Buscar receita mes corrente por usuario: ' + erro);
+        res.status(500).send(erro);
+        return;
+      }
+      res.status(200).json(resultado);
+    });
+
+  },
+
+  despesaMes(app, req, res){
+    const utilData = require('../../config/util/UtilDate');
+
+    const primeiroDiaMes = utilData.primeiroDiaMes();
+    const ultimoDiaMes = utilData.ultimoDiaMes();
+
+    const idUsuario = req.userId;
+
+    const connection = app.app.persistencia.connectionFactory();
+    const lancamentoDAO = new app.app.persistencia.LancamentoDAO(connection);
+
+    lancamentoDAO.buscaDespesaMes(idUsuario, primeiroDiaMes,ultimoDiaMes,function(erro, resultado){
+      if (erro) {
+        logger.info('Erro ao Buscar despesa mes corrente por usuario: ' + erro);
+        res.status(500).send(erro);
+        return;
+      }
+      res.status(200).json(resultado);
+    });
+  },
+
 };
