@@ -86,6 +86,18 @@ LancamentoDAO.prototype.maiorReceitaMes = function (idUsuario, primeiroDiaMes, u
   this._connection.query(query, callback);
 };
 
+LancamentoDAO.prototype.maiorDespesaMes = function (idUsuario, primeiroDiaMes, ultimoDiaMes, callback) {
+  let query = ` select MAX(l.valor) as valor
+                from lancamento l
+                inner join categoria c
+                on l.id_categoria    = c.id
+                where c.operacao     = 'DEBIT'
+                and l.dia between    ${mysql.escape(primeiroDiaMes)} and ${mysql.escape(ultimoDiaMes)}
+                and l.id_usuario     = ${mysql.escape(idUsuario)}
+                and c.id_usuario     = ${mysql.escape(idUsuario)}`;
+  this._connection.query(query, callback);
+};
+
 LancamentoDAO.prototype.todasReceitasMes = function (idUsuario, primeiroDiaMes, ultimoDiaMes, callback) {
   let query = ` select  l.descricao
               , l.valor
