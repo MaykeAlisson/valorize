@@ -10,7 +10,7 @@ module.exports = {
     req.assert('sexo', 'Sexo obrigatorio').notEmpty();
     req.assert('nascimento', 'Nascimento obrigatorio').notEmpty();
     req.assert('email', 'Email obrigatorio').notEmpty().isEmail();
-    req.assert('senha', 'senha obrigatorio').notEmpty();
+    req.assert('senha', 'Senha obrigatorio').notEmpty();
 
     const erros = req.validationErrors();
 
@@ -120,7 +120,7 @@ module.exports = {
     req.assert('nascimento', 'Nascimento obrigatorio').notEmpty();
     req.assert('email', 'Email obrigatorio').notEmpty().isEmail();
     req.assert('nome', 'Nome obrigatorio').notEmpty();
-    req.assert('senha', 'senha obrigatorio').notEmpty();
+    req.assert('senha', 'Senha obrigatorio').notEmpty();
     req.assert('sexo', 'Sexo obrigatorio').notEmpty();
 
     const erros = req.validationErrors();

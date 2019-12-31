@@ -22,6 +22,10 @@ module.exports = function (app) {
     app.app.controllers.lancamento.maiorReceitaMes(app, req, res, next);
   });
 
+  app.get('/api/lancamento/v1/maior-despesa-mes', verifyJWT, (req, res, next) => {
+    app.app.controllers.lancamento.maiorDespesaMes(app, req, res, next);
+  });
+
   app.get('/api/lancamento/v1/todas-receita-mes', verifyJWT, (req, res, next) => {
     app.app.controllers.lancamento.todasReceitasMes(app, req, res, next);
   });
@@ -33,5 +37,13 @@ module.exports = function (app) {
   app.get('/api/lancamento/v1/tag', verifyJWT, (req, res, next) => {
     app.app.controllers.lancamento.listaTagsPorUsuario(app, req, res, next);
   });
+
+  app.get('/api/lancamento/v1/receita', verifyJWT, (req, res, next) => {
+    app.app.controllers.lancamento.receitaMes(app, req, res, next);
+  });
+
+  app.get('/api/lancamento/v1/despesa', verifyJWT, (req, res, next) => {
+    app.app.controllers.lancamento.despesaMes(app, req, res, next);
+  })
 
 };

@@ -29,7 +29,7 @@ module.exports = {
     req.assert('valor', 'Valor obrigatorio').notEmpty();
     req.assert('descricao', 'Descrição obrigatorio').notEmpty();
     req.assert('dia', 'Dia obrigatorio').notEmpty();
-    req.assert('id_conta', 'Id_Conta obrigatorio').notEmpty().isEmail();
+    req.assert('id_conta', 'Id_Conta obrigatorio').notEmpty();
     req.assert('id_categoria', 'Id_Categoria obrigatorio').notEmpty();
 
     const erros = req.validationErrors();
@@ -65,7 +65,7 @@ module.exports = {
     req.assert('valor', 'Valor obrigatorio').notEmpty();
     req.assert('descricao', 'Descrição obrigatorio').notEmpty();
     req.assert('dia', 'Dia obrigatorio').notEmpty();
-    req.assert('id_conta', 'Id_Conta obrigatorio').notEmpty().isEmail();
+    req.assert('id_conta', 'Id_Conta obrigatorio').notEmpty();
     req.assert('id_categoria', 'Id_Categoria obrigatorio').notEmpty();
 
     const erros = req.validationErrors();
@@ -166,7 +166,28 @@ module.exports = {
 
     lancamentoDAO.maiorReceitaMes(idUsuario, primeiroDiaMes, ultimoDiaMes, function(erro, resultado){
       if (erro) {
-        logger.info('Erro ao Buscar aior Receita: ' + erro);
+        logger.info('Erro ao Buscar maior Receita mes atual: ' + erro);
+        res.status(500).send(erro);
+        return;
+      }
+      res.status(200).json(resultado);
+    });
+  },
+
+  maiorDespesaMes(app, req, res){
+    const utilData = require('../../config/util/UtilDate');
+
+    const primeiroDiaMes = utilData.primeiroDiaMes();
+    const ultimoDiaMes = utilData.ultimoDiaMes();
+
+    const idUsuario = req.userId;
+
+    const connection = app.app.persistencia.connectionFactory();
+    const lancamentoDAO = new app.app.persistencia.LancamentoDAO(connection);
+
+    lancamentoDAO.maiorDespesaMes(idUsuario, primeiroDiaMes, ultimoDiaMes, function(erro, resultado){
+      if (erro) {
+        logger.info('Erro ao Buscar maior Despesa mes atual: ' + erro);
         res.status(500).send(erro);
         return;
       }
@@ -227,6 +248,50 @@ module.exports = {
     lancamentoDAO.todasTagsPorUsuario(idUsuario, function(erro, resultado){
       if (erro) {
         logger.info('Erro ao Listar todas tags por usuario: ' + erro);
+        res.status(500).send(erro);
+        return;
+      }
+      res.status(200).json(resultado);
+    });
+  },
+
+  receitaMes(app, req, res){
+
+    const utilData = require('../../config/util/UtilDate');
+
+    const primeiroDiaMes = utilData.primeiroDiaMes();
+    const ultimoDiaMes = utilData.ultimoDiaMes();
+
+    const idUsuario = req.userId;
+
+    const connection = app.app.persistencia.connectionFactory();
+    const lancamentoDAO = new app.app.persistencia.LancamentoDAO(connection);
+
+    lancamentoDAO.buscaReceitaMes(idUsuario, primeiroDiaMes,ultimoDiaMes,function(erro, resultado){
+      if (erro) {
+        logger.info('Erro ao Buscar receita mes corrente por usuario: ' + erro);
+        res.status(500).send(erro);
+        return;
+      }
+      res.status(200).json(resultado);
+    });
+
+  },
+
+  despesaMes(app, req, res){
+    const utilData = require('../../config/util/UtilDate');
+
+    const primeiroDiaMes = utilData.primeiroDiaMes();
+    const ultimoDiaMes = utilData.ultimoDiaMes();
+
+    const idUsuario = req.userId;
+
+    const connection = app.app.persistencia.connectionFactory();
+    const lancamentoDAO = new app.app.persistencia.LancamentoDAO(connection);
+
+    lancamentoDAO.buscaDespesaMes(idUsuario, primeiroDiaMes,ultimoDiaMes,function(erro, resultado){
+      if (erro) {
+        logger.info('Erro ao Buscar despesa mes corrente por usuario: ' + erro);
         res.status(500).send(erro);
         return;
       }
