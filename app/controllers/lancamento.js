@@ -29,7 +29,7 @@ module.exports = {
     req.assert('valor', 'Valor obrigatorio').notEmpty();
     req.assert('descricao', 'Descrição obrigatorio').notEmpty();
     req.assert('dia', 'Dia obrigatorio').notEmpty();
-    req.assert('id_conta', 'Id_Conta obrigatorio').notEmpty().isEmail();
+    req.assert('id_conta', 'Id_Conta obrigatorio').notEmpty();
     req.assert('id_categoria', 'Id_Categoria obrigatorio').notEmpty();
 
     const erros = req.validationErrors();
@@ -65,7 +65,7 @@ module.exports = {
     req.assert('valor', 'Valor obrigatorio').notEmpty();
     req.assert('descricao', 'Descrição obrigatorio').notEmpty();
     req.assert('dia', 'Dia obrigatorio').notEmpty();
-    req.assert('id_conta', 'Id_Conta obrigatorio').notEmpty().isEmail();
+    req.assert('id_conta', 'Id_Conta obrigatorio').notEmpty();
     req.assert('id_categoria', 'Id_Categoria obrigatorio').notEmpty();
 
     const erros = req.validationErrors();
