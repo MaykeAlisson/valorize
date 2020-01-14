@@ -110,7 +110,7 @@ module.exports = {
         return;
       }
 
-      contaDAO.deleta(idConta, function (erro, resultado) {
+      contaDAO.deleta(idConta, idUsuario, function (erro, resultado) {
         if (erro){
           logger.info('Erro ao Deletar Conta: ' + erro);
           res.status(500).send(erro);
