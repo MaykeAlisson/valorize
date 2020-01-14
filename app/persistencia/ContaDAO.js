@@ -25,9 +25,10 @@ ContaDAO.prototype.atualiza = function(conta, callback) {
   this._connection.query(query, callback);
 };
 
-ContaDAO.prototype.deleta = function(idConta, callback) {
-  let query = `DELETE conta 
-               WHRE id = ${mysql.escape(conta.id)}`;
+ContaDAO.prototype.deleta = function(idConta, idUsuario, callback) {
+  let query = `DELETE FROM valorize.conta
+               WHERE id = ${mysql.escape(idConta.id)}
+               AND id_usuario = ${mysql.escape(idUsuario)}`;
   this._connection.query(query, callback);
 };
 
