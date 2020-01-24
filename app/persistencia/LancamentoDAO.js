@@ -69,7 +69,7 @@ LancamentoDAO.prototype.deletaPorCategoria = function (idCategoria, idUsuario, c
 
 LancamentoDAO.prototype.deletaPorConta = function (idConta, idUsuario, callback) {
   let query = `DELETE FROM lancamento
-               WHERE id_conta = ${mysql.escape(idConta)}
+               WHERE id_conta = ${mysql.escape(idConta.id)}
                AND id_usuario = ${mysql.escape(idUsuario)}`;
   this._connection.query(query, callback);
 };
