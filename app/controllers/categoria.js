@@ -218,13 +218,11 @@ module.exports = {
 
   },
 
-   buscaValorDisponivelPorCategoria(app, req, res) {
+  buscaValorDisponivelPorCategoria(app, req, res) {
     const utilData = require('../../config/util/UtilDate');
     const utilObject = require('../../config/util/utilObject');
     const utilNumber = require('../../config/util/UtilNumber');
 
-    const primeiroDiaMesAnterior = utilData.primeiroDiaMesAnterior();
-    const ultimoDiaMesAnterior = utilData.ultimoDiaMesAnterior();
     const primeiroDiaMes = utilData.primeiroDiaMes();
     const ultimoDiaMes = utilData.ultimoDiaMes();
     const idUsuario = req.userId;
@@ -237,20 +235,16 @@ module.exports = {
     let jsonObj = {};
     let resultCategorias = [];
     let creditoMesAtual;
-    let creditoMesAnterior;
     let tamanhoListaCategoria = 0;
-     let lop = 0;
 
-
-    creditoDAO.buscaCreditoMesPassadoEAtual(idUsuario, primeiroDiaMes, ultimoDiaMes, primeiroDiaMesAnterior,ultimoDiaMesAnterior,  function (erro, creditos) {
+    creditoDAO.buscaCreditoMesAtual(idUsuario, primeiroDiaMes, ultimoDiaMes, function (erro, creditos) {
       if (erro) {
         logger.info('Erro ao Buscar Credito para retorno de valor categoria' + erro);
         res.status(500).send(erro);
         return;
       }
 
-      creditoMesAtual = creditos[0].cred_atual;
-      creditoMesAnterior = creditos[0].cred_anterior;
+      creditoMesAtual = creditos[0].credito_mes;
 
       categoriaDAO.buscaPorcentagemTodasCategoria(idUsuario, function (erro, listCategorias) {
         if (erro) {
@@ -261,56 +255,34 @@ module.exports = {
 
         resultCategorias = listCategorias;
 
-        if (utilObject.isEmpty(creditoMesAtual)){
+        if (utilObject.isEmpty(creditoMesAtual)) {
           creditoMesAtual = 0;
         }
 
-        if (utilObject.isEmpty(creditoMesAnterior)){
-          creditoMesAnterior = 0;
-        }
-
-        if (resultCategorias.length > 0){
+        if (resultCategorias.length > 0) {
           tamanhoListaCategoria = resultCategorias.length;
         }
 
-        const lancamentosMesPassEAtual = (idCategoria, position) => new Promise((resolve, reject) => {
+        const lancamentosMesAtual = (idCategoria, position) => new Promise((resolve, reject) => {
 
-          let lancamentoMesPassado;
           let lancamentoMesAtual;
-          let disponivelMesPassado = creditoMesAnterior * (resultCategorias[position].porcentagem);
           let disponivelMesAtual = creditoMesAtual * (resultCategorias[position].porcentagem);
-          let sobraMesPassado;
           let disponivel;
 
-          lancamentoDAO.lancamentoMesAtualEPassado(idUsuario, idCategoria, primeiroDiaMes, ultimoDiaMes, primeiroDiaMesAnterior, ultimoDiaMesAnterior, function (erro, lancamentos) {
+          lancamentoDAO.lancamentoMesAtual(idUsuario, idCategoria, primeiroDiaMes, ultimoDiaMes, function (erro, lancamentos) {
             if (erro) {
               logger.info('Erro ao Buscar buscaPorcentagemTodasCategoria para retorno de valor categoria' + erro);
               reject(erro);
-            }else{
+            } else {
               lancamentoMesAtual = lancamentos[0].lanc_mesAtual;
-              lancamentoMesPassado = lancamentos[0].lanc_mesPassado;
 
-              if (utilObject.isEmpty(lancamentoMesAtual)){
+              if (utilObject.isEmpty(lancamentoMesAtual)) {
                 lancamentoMesAtual = 0;
               }
 
-              if (utilObject.isEmpty(lancamentoMesPassado)){
-                lancamentoMesPassado = 0;
-              }
-
-              sobraMesPassado = disponivelMesPassado - lancamentoMesPassado;
-
-              if (sobraMesPassado < 0){
-                let disponivelMesAtualTrunc = Math.trunc(disponivelMesAtual);
-                let lancamentoMesAtualTrunc = parseInt(lancamentoMesAtual.toString().replace('.',''));
-                let sobraMesPassadoTrunc =  Math.trunc(sobraMesPassado);
-                disponivel = (disponivelMesAtualTrunc - lancamentoMesAtualTrunc) - sobraMesPassadoTrunc;
-              }else{
-                let disponivelMesAtualTrunc = Math.trunc(disponivelMesAtual);
-                let lancamentoMesAtualTrunc = parseInt(lancamentoMesAtual.toString().replace('.',''));
-                let sobraMesPassadoTrunc =  Math.trunc(sobraMesPassado);
-                disponivel = (disponivelMesAtualTrunc - lancamentoMesAtualTrunc) + sobraMesPassadoTrunc;
-              }
+              let disponivelMesAtualTrunc = Math.trunc(disponivelMesAtual);
+              let lancamentoMesAtualTrunc = parseInt(lancamentoMesAtual.toString().replace('.', ''));
+              disponivel = (disponivelMesAtualTrunc - lancamentoMesAtualTrunc);
 
               resolve(parseInt(disponivel));
 
@@ -326,14 +298,14 @@ module.exports = {
               let id = resultCategorias[prop].id;
               let descricao = resultCategorias[prop].descricao;
 
-              const resposta = await lancamentosMesPassEAtual(id, prop);
+              const resposta = await lancamentosMesAtual(id, prop);
 
               jsonObj[descricao] = utilNumber.mascaraMoney(resposta);
             }
 
             res.status(200).json(jsonObj);
             return;
-          }catch (error) {
+          } catch (error) {
             console.log(error);
             res.status(500).send(error);
             return;

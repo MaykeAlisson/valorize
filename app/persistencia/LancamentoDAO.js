@@ -67,21 +67,12 @@ LancamentoDAO.prototype.lancamentoMesPorCategoria =  function (idUsuario, idCate
   this._connection.query(query, callback);
 };
 
-LancamentoDAO.prototype.lancamentoMesAtualEPassado = function(idUsuario, idCategoria, primeiroDiaMes, ultimoDiaMes, primeiroDiaMesAnt, ultimoDiaMesAnt, callback){
-  let query = `select (
-                SELECT sum(lc.valor) as lancamento
+LancamentoDAO.prototype.lancamentoMesAtual = function(idUsuario, idCategoria, primeiroDiaMes, ultimoDiaMes, callback){
+  let query = ` SELECT sum(lc.valor) as lanc_mesAtual
                 FROM lancamento lc
                 where lc.id_usuario = ${mysql.escape(idUsuario)}
                 and lc.id_categoria = ${mysql.escape(idCategoria)}
                 AND lc.criacao BETWEEN ${mysql.escape(primeiroDiaMes)} AND ${mysql.escape(ultimoDiaMes)}
-                )as lanc_mesAtual
-                , (
-                SELECT sum(lc.valor) as lancamento
-                FROM lancamento lc
-                where lc.id_usuario = ${mysql.escape(idUsuario)}
-                and lc.id_categoria = ${mysql.escape(idCategoria)}
-                AND lc.criacao BETWEEN ${mysql.escape(primeiroDiaMesAnt)} AND ${mysql.escape(ultimoDiaMesAnt)}
-                ) as lanc_mesPassado
               `;
   this._connection.query(query, callback);
 };
