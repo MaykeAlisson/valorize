@@ -1,12 +1,24 @@
+const moment = require('moment');
+
 module.exports = {
 
   primeiroDiaMes(){
-    const date = new Date();
-    return new Date(date.getFullYear(), date.getMonth(), 1);
+    let hoje = moment().format('YYYY-MM-DD');
+    return moment(hoje).startOf('month').format('YYYY-MM-DD');
   },
 
   ultimoDiaMes(){
-    const date = new Date();
-    return new Date(date.getFullYear(), date.getMonth() + 1, 0);
+    let hoje = moment().format('YYYY-MM-DD');
+    return moment(hoje).endOf('month').format('YYYY-MM-DD');
+  },
+
+  primeiroDiaMesAnterior(){
+    let hoje = moment().format('YYYY-MM-DD');
+    return moment(hoje).subtract(1, 'months').startOf('month').format('YYYY-MM-DD');
+  },
+
+  ultimoDiaMesAnterior(){
+    let hoje = moment().format('YYYY-MM-DD');
+    return moment(hoje).subtract(1, 'months').endOf('month').format('YYYY-MM-DD');
   },
 };

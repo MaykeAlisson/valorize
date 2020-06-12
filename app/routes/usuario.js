@@ -10,8 +10,13 @@ module.exports = function (app) {
     app.app.controllers.usuario.login(app, req, res);
   });
 
-  app.post('/api/usuario/v1/atualiza', verifyJWT, (req, res, next) => {
-    app.app.controllers.usuario.atualiza(app, req, res);
+  app.put('/api/usuario/v1/atualiza_pro/:key', verifyJWT, (req, res, next) => {
+    app.app.controllers.usuario.atualizaPro(app, req, res,next);
   });
+
+  app.post('/api/usuario/v1/atualiza_senha', (req, res) => {
+    app.app.controllers.usuario.atualizaSenha(app, req, res);
+  });
+
 
 };

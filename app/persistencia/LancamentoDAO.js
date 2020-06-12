@@ -7,34 +7,27 @@ const mysql = require('mysql');
 LancamentoDAO.prototype.lancamentosMes = function (idUsuario, primeiroDiaMes, ultimoDiaMes, callback) {
   let query = `SELECT lc.id
               , lc.valor
-              , date_format(\`dia\`,'%d-%m-%Y') as dia
+              , lc.criacao
               , lc.descricao
-              , co.descricao AS conta
-              , lc.id_conta
               , ca.descricao AS categoria
               , lc.id_categoria
-              , ca.operacao
+              , lc.tag
               FROM lancamento lc
-              JOIN conta co
-              ON co.id = lc.id_conta
               JOIN categoria ca
               ON ca.id = lc.id_categoria
               WHERE lc.id_usuario = ${mysql.escape(idUsuario)}
-              AND lc.dia between ${mysql.escape(primeiroDiaMes)} AND ${mysql.escape(ultimoDiaMes)}`;
+              AND lc.criacao between ${mysql.escape(primeiroDiaMes)} AND ${mysql.escape(ultimoDiaMes)}`;
   this._connection.query(query, callback);
 };
 
 LancamentoDAO.prototype.cadastro = function (lancamento, callback) {
-  let query = `INSERT INTO valorize.lancamento
-               (valor, dia, descricao, tags, note, id_usuario, id_conta, id_categoria, criacao)
+  let query = `INSERT INTO poupa_grana.lancamento
+               (valor, descricao, id_usuario, id_categoria, tag, criacao)
                VALUES(${mysql.escape(lancamento.valor)},
-               ${mysql.escape(lancamento.dia)},
                ${mysql.escape(lancamento.descricao)},
-               ${mysql.escape(lancamento.tags)},
-               ${mysql.escape(lancamento.note)},
                ${mysql.escape(lancamento.id_usuario)},
-               ${mysql.escape(lancamento.id_conta)},
                ${mysql.escape(lancamento.id_categoria)},
+               ${mysql.escape(lancamento.tag)},
                CURRENT_TIMESTAMP)`;
   this._connection.query(query, callback);
 };
@@ -42,20 +35,18 @@ LancamentoDAO.prototype.cadastro = function (lancamento, callback) {
 LancamentoDAO.prototype.atualiza = function (lancamento, callback) {
   let query = `UPDATE lancamento
                SET valor = ${mysql.escape(lancamento.valor)},
-               dia = ${mysql.escape(lancamento.dia)},
                descricao = ${mysql.escape(lancamento.descricao)},
-               tags = ${mysql.escape(lancamento.tags)},
-               note = ${mysql.escape(lancamento.note)},
                id_usuario = ${mysql.escape(lancamento.id_usuario)},
-               id_conta = ${mysql.escape(lancamento.id_conta)},
-               id_categoria = ${mysql.escape(lancamento.id_categoria)}
-               WHERE id = ${mysql.escape(lancamento.id)}`;
+               id_categoria = ${mysql.escape(lancamento.id_categoria)},
+               tag = ${mysql.escape(lancamento.tag)},
+               WHERE id = ${mysql.escape(lancamento.id)}
+               AND id_usuario = ${mysql.escape(lancamento.id)}`;
   this._connection.query(query, callback);
 };
 
 LancamentoDAO.prototype.deletaPorId = function (idLancamento, idUsuario, callback) {
   let query = `DELETE FROM lancamento
-               WHERE id = ${mysql.escape(idLancamento.id)}
+               WHERE id = ${mysql.escape(idLancamento)}
                AND id_usuario = ${mysql.escape(idUsuario)}`;
   this._connection.query(query, callback);
 };
@@ -67,103 +58,53 @@ LancamentoDAO.prototype.deletaPorCategoria = function (idCategoria, idUsuario, c
   this._connection.query(query, callback);
 };
 
-LancamentoDAO.prototype.deletaPorConta = function (idConta, idUsuario, callback) {
-  let query = `DELETE FROM lancamento
-               WHERE id_conta = ${mysql.escape(idConta.id)}
-               AND id_usuario = ${mysql.escape(idUsuario)}`;
+LancamentoDAO.prototype.lancamentoMesPorCategoria =  function (idUsuario, idCategoria, primeiroDiaMes, ultimoDiaMes, callback) {
+  let query = `SELECT sum(lc.valor) as lancamento
+               FROM lancamento lc
+               WHERE lc.id_usuario = ${mysql.escape(idUsuario)}
+               AND lc.id_categoria = ${mysql.escape(idCategoria)}
+               AND lc.criacao between ${mysql.escape(primeiroDiaMes)} AND ${mysql.escape(ultimoDiaMes)}`;
   this._connection.query(query, callback);
 };
 
-LancamentoDAO.prototype.maiorReceitaMes = function (idUsuario, primeiroDiaMes, ultimoDiaMes, callback) {
-  let query = ` select MAX(l.valor) as valor
-                from lancamento l
-                inner join categoria c
-                on l.id_categoria    = c.id
-                where c.operacao     = 'CREDIT'
-                and l.dia between    ${mysql.escape(primeiroDiaMes)} and ${mysql.escape(ultimoDiaMes)}
-                and l.id_usuario     = ${mysql.escape(idUsuario)}
-                and c.id_usuario     = ${mysql.escape(idUsuario)}`;
+LancamentoDAO.prototype.lancamentoMesAtualEPassado = function(idUsuario, idCategoria, primeiroDiaMes, ultimoDiaMes, primeiroDiaMesAnt, ultimoDiaMesAnt, callback){
+  let query = `select (
+                SELECT sum(lc.valor) as lancamento
+                FROM lancamento lc
+                where lc.id_usuario = ${mysql.escape(idUsuario)}
+                and lc.id_categoria = ${mysql.escape(idCategoria)}
+                AND lc.criacao BETWEEN ${mysql.escape(primeiroDiaMes)} AND ${mysql.escape(ultimoDiaMes)}
+                )as lanc_mesAtual
+                , (
+                SELECT sum(lc.valor) as lancamento
+                FROM lancamento lc
+                where lc.id_usuario = ${mysql.escape(idUsuario)}
+                and lc.id_categoria = ${mysql.escape(idCategoria)}
+                AND lc.criacao BETWEEN ${mysql.escape(primeiroDiaMesAnt)} AND ${mysql.escape(ultimoDiaMesAnt)}
+                ) as lanc_mesPassado
+              `;
   this._connection.query(query, callback);
 };
 
-LancamentoDAO.prototype.maiorDespesaMes = function (idUsuario, primeiroDiaMes, ultimoDiaMes, callback) {
-  let query = ` select MAX(l.valor) as valor
-                from lancamento l
-                inner join categoria c
-                on l.id_categoria    = c.id
-                where c.operacao     = 'DEBIT'
-                and l.dia between    ${mysql.escape(primeiroDiaMes)} and ${mysql.escape(ultimoDiaMes)}
-                and l.id_usuario     = ${mysql.escape(idUsuario)}
-                and c.id_usuario     = ${mysql.escape(idUsuario)}`;
+LancamentoDAO.prototype.lancamentosPorCategoria = function (idUsuario, idCategoria, primeiroDiaMes, ultimoDiaMes, callback) {
+  let query = `SELECT valor
+              , descricao
+              , id_categoria
+              , tag
+              , criacao
+               FROM lancamento lc
+               WHERE lc.id_usuario = ${mysql.escape(idUsuario)}
+               AND lc.id_categoria = ${mysql.escape(idCategoria)}
+               AND lc.criacao between ${mysql.escape(primeiroDiaMes)} AND ${mysql.escape(ultimoDiaMes)}`;
   this._connection.query(query, callback);
 };
 
-LancamentoDAO.prototype.todasReceitasMes = function (idUsuario, primeiroDiaMes, ultimoDiaMes, callback) {
-  let query = ` select  l.descricao
-              , l.valor
-              , c.descricao as categoria
-              , co.descricao as conta
-              , date_format(\`dia\`,'%d-%m-%Y') as data
-              from lancamento l
-              inner join categoria c
-              on l.id_categoria   = c.id
-              inner join conta co
-              on l.id_conta = co.id
-              where c.operacao        = 'CREDIT'
-              and l.dia between       ${mysql.escape(primeiroDiaMes)} and ${mysql.escape(ultimoDiaMes)}
-              and l.id_usuario        = ${mysql.escape(idUsuario)}
-              and c.id_usuario        = ${mysql.escape(idUsuario)}`;
-  this._connection.query(query, callback);
-};
-
-
-LancamentoDAO.prototype.todasDespesasMes = function (idUsuario, primeiroDiaMes, ultimoDiaMes, callback) {
-  let query = ` select  l.descricao
-              , l.valor
-              , c.descricao as categoria
-              , co.descricao as conta
-              , date_format(\`dia\`,'%d-%m-%Y') as data
-              from lancamento l
-              inner join categoria c
-              on l.id_categoria   = c.id
-              inner join conta co
-              on l.id_conta = co.id
-              where c.operacao        = 'DEBIT'
-              and l.dia between       ${mysql.escape(primeiroDiaMes)} and ${mysql.escape(ultimoDiaMes)}
-              and l.id_usuario        = ${mysql.escape(idUsuario)}
-              and c.id_usuario        = ${mysql.escape(idUsuario)}`;
-  this._connection.query(query, callback);
-};
-
-LancamentoDAO.prototype.todasTagsPorUsuario = function (idUsuario, callback) {
-  let query = ` select DISTINCT
-                tags
-                from  lancamento
-                where id_usuario = ${mysql.escape(idUsuario)}`;
-  this._connection.query(query, callback);
-};
-
-LancamentoDAO.prototype.buscaReceitaMes = function (idUsuario, primeiroDiaMes, ultimoDiaMes, callback){
-  let query = ` select SUM(l.valor) as receita
-                from lancamento l
-                  inner join categoria c
-                  on l.id_categoria   = c.id
-                where c.operacao        = 'CREDIT'
-                and l.dia between       ${mysql.escape(primeiroDiaMes)} and ${mysql.escape(ultimoDiaMes)}
-                and l.id_usuario        = ${mysql.escape(idUsuario)}
-                and c.id_usuario        = ${mysql.escape(idUsuario)}`;
-  this._connection.query(query, callback);
-};
-
-LancamentoDAO.prototype.buscaDespesaMes = function (idUsuario, primeiroDiaMes, ultimoDiaMes, callback){
-  let query = ` select SUM(l.valor) as despesa
-                from lancamento l
-                  inner join categoria c
-                  on l.id_categoria   = c.id
-                where c.operacao        = 'DEBIT'
-                and l.dia between       ${mysql.escape(primeiroDiaMes)} and ${mysql.escape(ultimoDiaMes)}
-                and l.id_usuario        = ${mysql.escape(idUsuario)}
-                and c.id_usuario        = ${mysql.escape(idUsuario)}`;
+LancamentoDAO.prototype.lancamentoMesPassadoPorCategoria = function (idUsuario, idCategoria, primeiroDiaMesPassado, ultimoDiaMesPassado, callback) {
+  let query = `SELECT sum(lc.valor) as lancamento
+               FROM lancamento lc
+               WHERE lc.id_usuario = ${mysql.escape(idUsuario)}
+               AND lc.id_categoria = ${mysql.escape(idCategoria)}
+               AND lc.criacao between ${mysql.escape(primeiroDiaMesPassado)} AND ${mysql.escape(ultimoDiaMesPassado)}`;
   this._connection.query(query, callback);
 };
 

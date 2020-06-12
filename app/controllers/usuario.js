@@ -14,7 +14,7 @@ module.exports = {
 
     const erros = req.validationErrors();
 
-    if (erros){
+    if (erros) {
       console.log('Erros de validacao encontados cadastro usuario');
       res.status(400).send(erros);
       return;
@@ -22,23 +22,51 @@ module.exports = {
 
     let usuario = req.body;
 
+    // Criptografa Senha
     const password = usuario.senha;
     const salt = bcrypt.genSaltSync(10);
     const hash = bcrypt.hashSync(password, salt);
 
     usuario.senha = hash;
+    usuario.ativo = "S";
 
     const connection = app.app.persistencia.connectionFactory();
     const usuarioDAO = new app.app.persistencia.UsuarioDAO(connection);
+    const categoriaDAO = new app.app.persistencia.CategoriaDAO(connection);
 
-    usuarioDAO.cadastro(usuario, function (erro, resultado) {
+    usuarioDAO.verificaEmail(usuario.email, function (erro, email) {
       if (erro) {
-        logger.info('Erro ao Cadastrar usuario: ' + erro);
+        logger.info('Erro ao Buscar email usuario: ' + erro);
         res.status(500).json(erro);
         return;
       }
-      res.status(201).send();
-    });
+
+      if (email.length > 0){
+        res.status(400).send('Email já cadastrado');
+        return;
+      }
+
+      usuarioDAO.cadastro(usuario, function (erro, resultado) {
+        if (erro) {
+          logger.info('Erro ao Cadastrar usuario: ' + erro);
+          res.status(500).json(erro);
+          return;
+        }
+        // cria categorias default
+        const insertId = resultado.insertId; // Recupera Id de insert anterior
+        categoriaDAO.insertCategoriaDefault(insertId, function (erro, resultado) {
+          if (erro) {
+            logger.info('Erro ao Cadastrar categorias default para usuario: ' + erro);
+            res.status(500).json(erro);
+            return;
+          }
+          res.status(201).send();
+        });
+
+      });
+    })
+
+
 
   },
 
@@ -50,7 +78,7 @@ module.exports = {
 
     const erros = req.validationErrors();
 
-    if (erros){
+    if (erros) {
       console.log('Erros de validacao encontados login usuario');
       res.status(400).send(erros);
       return;
@@ -76,7 +104,7 @@ module.exports = {
       } else {
         const db_password = resultado[0].senha; // Veio da base de dados.
 
-        if(!bcrypt.compareSync(senha, db_password)){
+        if (!bcrypt.compareSync(senha, db_password)) {
           res.status(400).json({
             success: false,
             message: 'Autenticação do Usuário falhou. E-mail ou Senha incorreta!'
@@ -85,12 +113,13 @@ module.exports = {
         }
         usuario = {
           "id": resultado[0].id,
-          "nome": resultado[0].nome
+          "nome": resultado[0].nome,
+          "pro": resultado[0].pro
         };
       }
 
       if (usuario === null) {
-        res.status(400).json({
+        res.status(401).json({
           success: false,
           message: 'Autenticação do Usuário falhou. E-mail ou Senha incorreta!'
         });
@@ -104,40 +133,61 @@ module.exports = {
         const response = {
           "idUser": usuario.id,
           "userName": usuario.nome,
+          "pro": usuario.pro,
           "token": token
         };
 
-        res.status(200).json(response);
+         res.status(200).json(response);
       }
 
     });
 
-
   },
 
-  atualiza(app, req, res) {
-
-    req.assert('nascimento', 'Nascimento obrigatorio').notEmpty();
-    req.assert('email', 'Email obrigatorio').notEmpty().isEmail();
-    req.assert('nome', 'Nome obrigatorio').notEmpty();
-    req.assert('senha', 'Senha obrigatorio').notEmpty();
-    req.assert('sexo', 'Sexo obrigatorio').notEmpty();
-
-    const erros = req.validationErrors();
-
-    if (erros){
-      console.log('Erros de validacao encontados atualiza usuario');
-      res.status(400).send(erros);
-      return;
-    }
+  atualizaPro(app, req, res) {
 
     const idUsuario = req.userId;
-    const usuario = req.body;
+
+    // criar uma chave secreta que seta enviada ao confirma
+    // o pagamento e sera utilizado para garantir a segurança
+    const key = req.params.key;
+
+    if(key !== 'chave'){
+      res.status(400).send("Chave Invalida");
+    }
 
     const connection = app.app.persistencia.connectionFactory();
     const usuarioDAO = new app.app.persistencia.UsuarioDAO(connection);
 
-    usuarioDAO.atualiza(idUsuario, usuario, function (erro, resultado) {
+    usuarioDAO.atualizaPro(idUsuario, function (erro, resultado) {
+      if (erro) {
+        logger.info('Erro ao Atualizar usuario: ' + erro);
+        res.status(500).send(erro);
+        return;
+      }
+      res.status(200).send();
+    });
+
+  },
+
+  atualizaSenha(app, req, res) {
+    const bcrypt = require('bcryptjs');
+
+    let trocaSenha = req.body;
+
+    // Chave secreta enviada no email de recuperação para seguranca
+
+    // Criptografa Senha
+    const password = trocaSenha.senha;
+    const salt = bcrypt.genSaltSync(10);
+    const hash = bcrypt.hashSync(password, salt);
+
+    trocaSenha.senha = hash;
+
+    const connection = app.app.persistencia.connectionFactory();
+    const usuarioDAO = new app.app.persistencia.UsuarioDAO(connection);
+
+    usuarioDAO.atualizaSenha(trocaSenha, function (erro, resultado) {
       if (erro) {
         logger.info('Erro ao Atualizar usuario: ' + erro);
         res.status(500).send(erro);

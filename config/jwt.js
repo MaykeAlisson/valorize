@@ -17,6 +17,7 @@ module.exports = {
       // se tudo estiver ok, salva no request para uso posterior
       req.userId = decoded.usuario.id;
       req.userNome = decoded.usuario.nome;
+      req.userPro = decoded.usuario.pro;
 
       next();
     });
