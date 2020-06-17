@@ -5,37 +5,53 @@ const bodyParser = require('body-parser');
 const expressValidator = require('express-validator');
 const cors = require('cors');
 const helmet = require('helmet');
+const morgan = require("morgan");
 
 // Iniciando express na var app
 const app = express();
 
-// Cors
-app.use(cors());
+const isProduction = process.env.NODE_ENV === "production";
 
-// Helmet
+app.use(cors());
+if(!isProduction) app.use(morgan("dev"));
 app.use(helmet());
 app.disable('x-powered-by');
 
-// parse application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({ extended: true }));
-
-// parse application/json
-app.use(bodyParser.json());
-// app.use(bodyParser.urlencoded({extended: false, limit: 1.5*1024*1024}));
-// app.use(bodyParser.json({limit: 1.5*1024*1024}));
+app.use(bodyParser.urlencoded({extended: false, limit: 1.5*1024*1024}));
+app.use(bodyParser.json({limit: 1.5*1024*1024}));
 
 // validando campos
 app.use(expressValidator());
 
-// Definindo arquivos staticos
-app.use(express.static('./app/public'));
+// Routes
+const rotaHome = require('../app/routes/home');
+const rotaCategoria = require('../app/routes/categoria');
+const rotaCredito = require('../app/routes/credito');
+const rotaLancamento = require('../app/routes/lancamento');
+const rotaObjetivo = require('../app/routes/objetivo');
+const rotaUsuario = require('../app/routes/usuario');
 
-// Definindo auto-load do Consign (inject no app)
-consign()
-  .include('./app/routes')
-  .then('./app/persistencia')
-  .then('./app/controllers')
-  .into(app);
+app.use('/', rotaHome);
+app.use('/api/categoria', rotaCategoria);
+app.use('/api/credito', rotaCredito);
+app.use('/api/lancamento', rotaLancamento);
+app.use('/api/objetivo', rotaObjetivo);
+app.use('/api/usuario', rotaUsuario);
+
+// 404
+app.use((req,res,next) => {
+  const err = new Error("Not Found");
+  err.status = 404;
+  next(err);
+});
+
+// // Tratamento de Erro
+app.use((err, req, res, next) => {
+  res.status(err.status || 500);
+  if (err.status !== 404) console.warn("Error: ", err.message, new Date());
+  res.json({errors: {message: err.message, status: err.status}});
+});
+
 
 // Exportando var app
 module.exports = app;

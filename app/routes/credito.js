@@ -1,21 +1,15 @@
-module.exports = function (app) {
+const router = require('express').Router();
+const verifyJWT = require('../../config/jwt').verifyJWT;
 
-  const verifyJWT = require('../../config/jwt').verifyJWT;
+const CreditoController = require('../controllers/credito');
 
-  app.get('/api/credito/v1/credito', verifyJWT, (req, res, next) => {
-    app.app.controllers.credito.busca(app, req, res, next);
-  });
+router.get('/v1/credito', verifyJWT, CreditoController.busca);
 
-  app.post('/api/credito/v1/credito', verifyJWT, (req, res, next) => {
-    app.app.controllers.credito.cadastro(app, req, res, next);
-  });
+router.post('/v1/credito', verifyJWT, CreditoController.cadastro);
 
-  app.delete('/api/credito/v1/deleta/:id', verifyJWT, (req, res, next) => {
-    app.app.controllers.credito.deleta(app, req, res, next);
-  });
+router.delete('/v1/deleta/:id', verifyJWT, CreditoController.deleta);
 
-  app.get('/api/credito/v1/total-credito-mes', verifyJWT, (req, res, next) => {
-    app.app.controllers.credito.totalCreditoMes(app, req, res, next);
-  });
+router.get('/v1/total-credito-mes', verifyJWT, CreditoController.totalCreditoMes);
 
-};
+module.exports = router;
+

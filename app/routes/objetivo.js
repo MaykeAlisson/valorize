@@ -1,21 +1,16 @@
-module.exports = function (app) {
+const router = require('express').Router();
+const verifyJWT = require('../../config/jwt').verifyJWT;
 
-  const verifyJWT = require('../../config/jwt').verifyJWT;
+const ObjetivoController = require('../controllers/objetivo');
 
-  app.get('/api/objetivo/v1/objetivo', verifyJWT, (req, res, next) =>  {
-    app.app.controllers.objetivo.buscaTodos(app, req, res, next);
-  });
 
-  app.post('/api/objetivo/v1/cadastro', verifyJWT, (req, res, next) =>  {
-    app.app.controllers.objetivo.cadastro(app, req, res, next);
-  });
+router.get('/v1/objetivo', verifyJWT, ObjetivoController.buscaTodos);
 
-  app.get('/api/objetivo/v1/busca-detalhe', verifyJWT, (req, res, next) =>  {
-    app.app.controllers.objetivo.buscaPorId(app, req, res, next);
-  });
+// router.post('/v1/cadastro', verifyJWT, ObjetivoController.cadastro);
+//
+// router.get('/v1/busca-detalhe', verifyJWT, ObjetivoController.buscaPorId);
+//
+// router.delete('/v1/delete', verifyJWT, ObjetivoController.deleta);
 
-  app.delete('/api/objetivo/v1/delete', verifyJWT, (req, res, next) =>  {
-    app.app.controllers.objetivo.deleta(app, req, res, next);
-  });
+module.exports = router;
 
-};

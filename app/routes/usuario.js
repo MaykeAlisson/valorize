@@ -1,22 +1,14 @@
-module.exports = function (app) {
+const router = require('express').Router();
+const verifyJWT = require('../../config/jwt').verifyJWT;
+const UsuarioController = require('../controllers/usuario');
 
-  const verifyJWT = require('../../config/jwt').verifyJWT;
+router.post('/v1/cadastro', UsuarioController.cadastro);
 
-  app.post('/api/usuario/v1/cadastro', function(req, res) {
-    app.app.controllers.usuario.cadastro(app, req, res);
-  });
+router.post('/v1/login', UsuarioController.login);
 
-  app.post('/api/usuario/v1/login', function (req, res) {
-    app.app.controllers.usuario.login(app, req, res);
-  });
+router.put('/v1/atualiza_pro/:key', verifyJWT, UsuarioController.atualizaPro);
 
-  app.put('/api/usuario/v1/atualiza_pro/:key', verifyJWT, (req, res, next) => {
-    app.app.controllers.usuario.atualizaPro(app, req, res,next);
-  });
+router.post('/v1/atualiza_senha', UsuarioController.atualizaSenha);
 
-  app.post('/api/usuario/v1/atualiza_senha', (req, res) => {
-    app.app.controllers.usuario.atualizaSenha(app, req, res);
-  });
+module.exports = router;
 
-
-};
