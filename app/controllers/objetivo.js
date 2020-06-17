@@ -13,22 +13,22 @@ module.exports = {
     }
 
     req.assert('descricao', 'Descrição obrigatorio').notEmpty();
-    req.assert('porcentagem', 'Porcentagem obrigatorio').notEmpty();
+    req.assert('valor', 'Valor obrigatorio').notEmpty();
 
     const idUsuario = req.userId;
+    let objetivo = req.body;
 
     const connection = app.app.persistencia.connectionFactory();
     const objetivoDAO = new app.app.persistencia.ObjetivoDAO(connection);
 
-    objetivoDAO.cadastro(credito, function (erro, resultado) {
+    objetivoDAO.cadastro(objetivo, function (erro, resultado) {
       if (erro) {
-        logger.info('Erro ao Cadastrar Credito: ' + erro);
+        logger.info('Erro ao Cadastrar Objetivo: ' + erro);
         res.status(500).send(erro);
         return;
       }
       res.status(201).send();
     });
-
   },
 
 };
