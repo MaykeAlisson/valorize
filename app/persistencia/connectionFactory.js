@@ -10,6 +10,4 @@ function createDBConnection(){
   });
 }
 
-module.exports = function () {
-  return createDBConnection;
-};
+module.exports = createDBConnection();

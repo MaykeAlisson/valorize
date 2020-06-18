@@ -1,5 +1,4 @@
 const mysql = require('mysql');
-
 class UsuarioDAO {
 
   constructor(connection) {
@@ -26,6 +25,8 @@ class UsuarioDAO {
 
   // outros métodos de persistência
 }
+
+module.exports = UsuarioDAO;
 
 // function UsuarioDAO(connection) {
 //   this._connection = connection;

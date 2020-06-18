@@ -84,6 +84,8 @@ exports.login = (req, res, next) => {
 
   const usuarioDAO = new UsuarioDAO(connection);
 
+  // usuarioDAO.login(email).then(usuario => res.json(usuario)).catch(next);
+
   usuarioDAO.login(email, function (erro, resultado) {
     if (erro) {
       logger.info('Erro ao realizar Login usuario: ' + erro);
