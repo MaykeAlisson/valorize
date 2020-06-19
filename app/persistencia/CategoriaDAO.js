@@ -72,6 +72,5 @@ CategoriaDAO.prototype.buscaPorcentagemTodasCategoria = function (idUsuario, cal
 };
 
 
-module.exports = function () {
-  return CategoriaDAO;
-};
+module.exports = CategoriaDAO;
+

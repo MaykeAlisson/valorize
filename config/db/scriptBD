@@ -55,6 +55,7 @@ id_usuario BIGINT NOT NULL,
 criacao DATETIME DEFAULT CURRENT_TIMESTAMP
 )engine=MyISAM default charset=utf8 collate=utf8_unicode_ci;
 
+
 ALTER TABLE usuario ENGINE=INNODB;
 ALTER TABLE credito ENGINE=INNODB;
 ALTER TABLE categoria ENGINE=INNODB;
@@ -64,7 +65,7 @@ ALTER TABLE objetivo ENGINE=INNODB;
 -- CONSTRAINT PK
 
 ALTER TABLE usuario ADD CONSTRAINT PK_USUARIO PRIMARY KEY (id);
-ALTER TABLE credito ADD CONSTRAINT PK_USUARIO PRIMARY KEY (id);
+ALTER TABLE credito ADD CONSTRAINT PK_CREDITO PRIMARY KEY (id);
 ALTER TABLE categoria ADD CONSTRAINT PK_CATEGORIA PRIMARY KEY (id);
 ALTER TABLE lancamento ADD CONSTRAINT PK_LANCAMENTO PRIMARY KEY (id);
 ALTER TABLE objetivo ADD CONSTRAINT PK_OBJETIVO PRIMARY KEY (id);
@@ -83,78 +84,3 @@ ALTER TABLE objetivo ADD CONSTRAINT id_fk_usuario_objetivo FOREIGN KEY(id_usuari
 
 ALTER TABLE poupa_grana.lancamento ADD tag varchar(50) NULL;
 ALTER TABLE poupa_grana.objetivo ADD tag varchar(50) NOT NULL;
-
-
--- INSET
-
-INSERT INTO poupa_grana.usuario
-(nome, email, senha, pro, criacao, nascimento)
-VALUES('Mayke Alisson', 'maykealison@gmail.com', '123456', 'S', CURRENT_TIMESTAMP, '1991-11-04');
-
--- Credito
-INSERT INTO poupa_grana.credito (descricao, valor, id_usuario, criacao)
-VALUES('Salario', 4.500, 1, CURRENT_TIMESTAMP);
-
--- Categorias
-INSERT INTO poupa_grana.categoria (descricao, porcentagem, id_usuario, criacao)
-VALUES('Necessidades Básicas', 50, 1, CURRENT_TIMESTAMP);
-INSERT INTO poupa_grana.categoria (descricao, porcentagem, id_usuario, criacao)
-VALUES('Investimento', 20, 1, CURRENT_TIMESTAMP);
-INSERT INTO poupa_grana.categoria (descricao, porcentagem, id_usuario, criacao)
-VALUES('Educação', 10, 1, CURRENT_TIMESTAMP);
-INSERT INTO poupa_grana.categoria (descricao, porcentagem, id_usuario, criacao)
-VALUES('Doação', 10, 1, CURRENT_TIMESTAMP);
-INSERT INTO poupa_grana.categoria (descricao, porcentagem, id_usuario, criacao)
-VALUES('Diversão', 10, 1, CURRENT_TIMESTAMP);
-
-
--- Lancamentos
-INSERT INTO poupa_grana.lancamento (valor, descricao, id_usuario, id_categoria, criacao)
-VALUES(380, 'Compra', 1, 1, CURRENT_TIMESTAMP);
-
--- SELECT
-
---- Credito
-select
-	(
-  	   SELECT sum(valor)
-	   FROM credito
-	   WHERE id_usuario = 1
-	   AND criacao BETWEEN '2020-02-01' and '2020-02-29'
-	) as cred_atual
-,	(
-	   SELECT sum(valor)
-	   FROM credito
-	   WHERE id_usuario = 1
-	   AND criacao BETWEEN '2020-01-01' and '2020-01-30'
-	) as cred_anterior
-
----------------
-
--- Porcentagem
-select 	descricao
-,		porcentagem
-from categoria
-where id_usuario = 1
--------------------
-
-select 	sum(la.valor) lancamento
-,		ca.descricao
-from lancamento la
-,	 categoria ca
-where la.id_usuario = 1
-and la.id_categoria = ca.id
-and la.id_usuario = ca.id_usuario
-AND la.criacao BETWEEN '2020-01-01' and '2020-01-30'
-group by la.id_categoria
--------------
-select 	sum(la.valor) lancamento_mes
-,		ca.descricao
-from lancamento la
-,	 categoria ca
-where la.id_usuario = 1
-and la.id_categoria = ca.id
-and la.id_usuario = ca.id_usuario
-and la.criacao BETWEEN '2020-02-01' and '2020-02-29'
-group by la.id_categoria
-

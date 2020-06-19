@@ -99,6 +99,5 @@ LancamentoDAO.prototype.lancamentoMesPassadoPorCategoria = function (idUsuario, 
   this._connection.query(query, callback);
 };
 
-module.exports = function () {
-  return LancamentoDAO;
-};
+module.exports = LancamentoDAO;
+

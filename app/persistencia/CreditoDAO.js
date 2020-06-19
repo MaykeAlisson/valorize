@@ -43,6 +43,5 @@ CreditoDAO.prototype.buscaCreditoMesAtual = function (idUsuario, primeiroDiaMes,
   this._connection.query(query, callback);
 };
 
-module.exports = function () {
-  return CreditoDAO;
-};
+module.exports = CreditoDAO;
+
