@@ -22,8 +22,10 @@ CategoriaDAO.prototype.cadastro = function (categoria, callback) {
 
 CategoriaDAO.prototype.atualiza = function (categoria, callback) {
   let query = `UPDATE categoria
-               SET descricao = ${mysql.escape(categoria.descricao)}, porcentagem = ${mysql.escape(categoria.porcentagem)}, id_usuario = ${mysql.escape(categoria.id_usuario)}
-               WHERE id = ${mysql.escape(categoria.id)}`;
+               SET descricao = ${mysql.escape(categoria.descricao)},
+               porcentagem = ${mysql.escape(categoria.porcentagem)}
+               WHERE id = ${mysql.escape(categoria.id)}
+               AND id_usuario = ${mysql.escape(categoria.id_usuario)};`;
   this._connection.query(query, callback);
 };
 
