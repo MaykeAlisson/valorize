@@ -162,11 +162,42 @@ exports.update = (req, res, next) => {
       res.status(500).send(erro);
       return;
     }
-
     res.status(200).send();
-
   });
+};
 
+exports.delete = (req, res, next) => {
+
+  const pro = req.userPro;
+
+  if (pro !== 'S') {
+    res.status(401).send("Adquira a versão Pro!");
+    return;
+  }
+
+  req.assert('id', 'Id obrigatorio').notEmpty();
+
+  const erros = req.validationErrors();
+
+  if (erros) {
+    console.log('Erros de validacao encontados deletar objetivo por id');
+    res.status(400).send(erros);
+    return;
+  }
+
+  const idUsuario = req.userId;
+  const idObjetivo = req.params.id;
+
+  const objetivoDAO = new ObjetivoDAO(connection);
+
+  objetivoDAO.delete(idUsuario, idObjetivo, function (erro, resultado) {
+    if (erro) {
+      logger.info('Erro ao Deletar Objetivo: ' + erro);
+      res.status(500).send(erro);
+      return;
+    }
+    res.status(200).send();
+  });
 };
 
 

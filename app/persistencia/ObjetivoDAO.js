@@ -39,6 +39,14 @@ ObjetivoDAO.prototype.update = function (idUsuario, idObjetivo, objetivo, callba
   this._connection.query(query, callback);
 };
 
+ObjetivoDAO.prototype.delete = function (idUsuario, idObjetivo, callback) {
+  let query = ` DELETE
+                FROM objetivo
+                WHERE id = ${mysql.escape(idObjetivo)}
+                AND id_usuario = ${mysql.escape(idUsuario)};`;
+  this._connection.query(query, callback);
+};
+
 
 module.exports = ObjetivoDAO;
 
