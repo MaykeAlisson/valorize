@@ -34,23 +34,14 @@ CreditoDAO.prototype.buscaValorTodosCreditoMes = function (idUsuario, primeiroDi
   this._connection.query(query, callback);
 };
 
-CreditoDAO.prototype.buscaCreditoMesPassadoEAtual = function (idUsuario, primeiroDiaMes, ultimoDiaMes, primeiroDiaMesAnterior, ultimoDiaMesAnterior, callback) {
-  let query = `select
-              (
-                 SELECT sum(valor)
+CreditoDAO.prototype.buscaCreditoMesAtual = function (idUsuario, primeiroDiaMes, ultimoDiaMes, callback) {
+  let query = `  SELECT sum(valor) as credito_mes
                  FROM credito
                  WHERE id_usuario = ${mysql.escape(idUsuario)}
                  AND criacao BETWEEN ${mysql.escape(primeiroDiaMes)} and ${mysql.escape(ultimoDiaMes)}
-              ) as cred_atual
-              ,(
-                 SELECT sum(valor)
-                 FROM credito
-                 WHERE id_usuario = ${mysql.escape(idUsuario)}
-                 AND criacao BETWEEN ${mysql.escape(primeiroDiaMesAnterior)} and ${mysql.escape(ultimoDiaMesAnterior)}
-              ) as cred_anterior`;
+              `;
   this._connection.query(query, callback);
 };
 
-module.exports = function () {
-  return CreditoDAO;
-};
+module.exports = CreditoDAO;
+

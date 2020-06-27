@@ -1,21 +1,16 @@
-module.exports = function (app) {
+const router = require('express').Router();
+const verifyJWT = require('../../config/jwt').verifyJWT;
 
-  const verifyJWT = require('../../config/jwt').verifyJWT;
+const LancamentoController = require('../controllers/lancamento');
 
-  app.get('/api/lancamento/v1/lancamento', verifyJWT, (req, res, next) => {
-    app.app.controllers.lancamento.lancamentosMes(app, req, res, next);
-  });
+router.get('/v1/lancamento', verifyJWT, LancamentoController.lancamentosMes);
 
-  app.post('/api/lancamento/v1/cadastro', verifyJWT, (req, res, next) => {
-    app.app.controllers.lancamento.cadastro(app, req, res, next);
-  });
+router.post('/v1/cadastro', verifyJWT, LancamentoController.cadastro);
 
-  app.delete('/api/lancamento/v1/deleta/:lancamento', verifyJWT, (req, res, next) => {
-    app.app.controllers.lancamento.deleta(app, req, res, next);
-  });
+router.delete('/v1/deleta/:lancamento', verifyJWT, LancamentoController.deleta);
 
-  app.get('/api/lancamento/v1/lancamentos/:categoria', verifyJWT, (req, res, next) => {
-    app.app.controllers.lancamento.lancamentosPorCategoria(app, req, res, next);
-  });
+router.get('/v1/lancamentos/:categoria', verifyJWT, LancamentoController.lancamentosPorCategoria);
 
-};
+module.exports = router;
+
+

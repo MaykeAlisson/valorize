@@ -1,9 +1,10 @@
-// Import Logger
 const logger = require('../../config/util/logger.js');
+const utilData = require('../../config/util/UtilDate');
+const connection = require('../persistencia/connectionFactory');
+const CreditoDAO = require('../persistencia/CreditoDAO');
 
-module.exports = {
 
-  cadastro(app, req, res) {
+exports.cadastro = (req, res, next) => {
 
     req.assert('descricao', 'Descrição obrigatorio').notEmpty();
     req.assert('valor', 'Valor obrigatorio').notEmpty();
@@ -21,8 +22,7 @@ module.exports = {
 
     credito = {...credito, id_usuario: idUsuario};
 
-    const connection = app.app.persistencia.connectionFactory();
-    const creditoDAO = new app.app.persistencia.CreditoDAO(connection);
+    const creditoDAO = new CreditoDAO(connection);
 
     creditoDAO.cadastro(credito, function (erro, resultado) {
       if (erro) {
@@ -33,18 +33,16 @@ module.exports = {
       res.status(201).send();
     });
 
-  },
+  };
 
-  busca(app, req, res) {
-    const utilData = require('../../config/util/UtilDate');
+exports.busca = (req, res, next) => {
 
     const primeiroDiaMes = utilData.primeiroDiaMes();
     const ultimoDiaMes = utilData.ultimoDiaMes();
 
     const idUsuario = req.userId;
 
-    const connection = app.app.persistencia.connectionFactory();
-    const creditoDAO = new app.app.persistencia.CreditoDAO(connection);
+    const creditoDAO = new CreditoDAO(connection);
 
     creditoDAO.busca(idUsuario, primeiroDiaMes, ultimoDiaMes, function (erro, resultado) {
       if (erro) {
@@ -54,9 +52,9 @@ module.exports = {
       }
       res.status(200).json(resultado);
     });
-  },
+  };
 
-  deleta(app, req, res) {
+exports.deleta = (req, res, next) => {
 
     req.assert('id', 'Id obrigatorio').notEmpty();
 
@@ -71,8 +69,7 @@ module.exports = {
     const idCredito = req.params.id;
     const idUsuario = req.userId;
 
-    const connection = app.app.persistencia.connectionFactory();
-    const creditoDAO = new app.app.persistencia.CreditoDAO(connection);
+    const creditoDAO = new CreditoDAO(connection);
 
     creditoDAO.delete(idCredito, idUsuario, function (erro, resultado) {
       if (erro) {
@@ -83,17 +80,16 @@ module.exports = {
       res.status(200).send();
     });
 
-  },
+  };
 
-  totalCreditoMes(app, req, res) {
-    const utilData = require('../../config/util/UtilDate');
+exports.totalCreditoMes = (req, res, next) => {
+
     const primeiroDiaMes = utilData.primeiroDiaMes();
     const ultimoDiaMes = utilData.ultimoDiaMes();
 
     const idUsuario = req.userId;
 
-    const connection = app.app.persistencia.connectionFactory();
-    const creditoDAO = new app.app.persistencia.CreditoDAO(connection);
+    const creditoDAO = new CreditoDAO(connection);
 
     creditoDAO.buscaValorTodosCreditoMes( idUsuario, primeiroDiaMes,ultimoDiaMes,function (erro, resultado) {
       if (erro) {
@@ -104,7 +100,7 @@ module.exports = {
       res.status(200).json(resultado[0]);
     });
 
-  },
+  };
 
 
-};
+

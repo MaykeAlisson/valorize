@@ -3,7 +3,6 @@ function UsuarioDAO(connection) {
 }
 
 const mysql = require('mysql');
-
 UsuarioDAO.prototype.verificaEmail = function (email, callback) {
   let query = `SELECT id
                FROM usuario
@@ -32,6 +31,5 @@ UsuarioDAO.prototype.atualizaSenha = function (trocaSenha, callback) {
   this._connection.query(query, callback);
 };
 
-module.exports = function () {
-  return UsuarioDAO;
-};
+module.exports =  UsuarioDAO;
+

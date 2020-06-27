@@ -1,25 +1,12 @@
-module.exports = function (app) {
+const router = require('express').Router();
+const verifyJWT = require('../../config/jwt').verifyJWT;
+const CategoriaController = require('../controllers/categoria');
 
-  const verifyJWT = require('../../config/jwt').verifyJWT;
+router.get('/v1/categoria', verifyJWT, CategoriaController.busca);
+router.post('/v1/cadastro', verifyJWT, CategoriaController.cadastro);
+router.put('/v1/atualiza', verifyJWT, CategoriaController.atualiza);
+router.delete('/v1/deleta', verifyJWT, CategoriaController.deleta);
+router.get('/v1/valor-disponivel', verifyJWT, CategoriaController.buscaValorDisponivelPorCategoria);
 
-  app.get('/api/categoria/v1/categoria', verifyJWT, (req, res, next) => {
-    app.app.controllers.categoria.busca(app, req, res, next);
-  });
+module.exports = router;
 
-  app.post('/api/categoria/v1/cadastro', verifyJWT, (req, res, next) => {
-    app.app.controllers.categoria.cadastro(app, req, res, next);
-  });
-
-  app.put('/api/categoria/v1/atualiza', verifyJWT, (req, res, next) => {
-    app.app.controllers.categoria.atualiza(app, req, res, next);
-  });
-
-  app.delete('/api/categoria/v1/deleta', verifyJWT, (req, res, next) => {
-    app.app.controllers.categoria.deleta(app, req, res, next);
-  });
-
-  app.get('/api/categoria/v1/valor-disponivel', verifyJWT, (req, res, next) => {
-    app.app.controllers.categoria.buscaValorDisponivelPorCategoria(app, req, res, next);
-  });
-
-};
