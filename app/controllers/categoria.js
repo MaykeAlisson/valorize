@@ -7,6 +7,7 @@ const connection = require('../persistencia/connectionFactory');
 const CategoriaDAO = require('../persistencia/CategoriaDAO');
 const LancamentoDAO = require('../persistencia/LancamentoDAO');
 const CreditoDAO = require('../persistencia/CreditoDAO');
+const {isEmpty} = require("../../config/util/utilObject");
 
 exports.cadastro = (req, res, next) => {
 
@@ -125,6 +126,11 @@ exports.atualiza = (req, res, next) => {
           return;
         }
 
+        if (isEmpty(porcentagemCategoria)){
+          res.status(400).send("Categoria informada não pertence ao usuario");
+          return;
+        }
+
         let porcentagemAtual = porcentagemCategoria[0].porcentagem;
 
         if (categoria.porcentagem > porcentagemAtual) {
@@ -213,6 +219,10 @@ exports.deleta = (req, res, next) => {
         res.status(500).send(erro);
         return;
       }
+      if (resultado.affectedRows === 0){
+        res.status(204).send();
+        return;
+      }
       res.status(200).send();
     });
 
@@ -264,7 +274,7 @@ exports.buscaValorDisponivelPorCategoria = (req, res, next) => {
       const lancamentosMesAtual = (idCategoria, position) => new Promise((resolve, reject) => {
 
         let lancamentoMesAtual;
-        let disponivelMesAtual = creditoMesAtual * (resultCategorias[position].porcentagem);
+        let disponivelMesAtual = creditoMesAtual * (resultCategorias[position].porcentagem / 100);
         let disponivel;
 
         lancamentoDAO.lancamentoMesAtual(idUsuario, idCategoria, primeiroDiaMes, ultimoDiaMes, function (erro, lancamentos) {
@@ -278,11 +288,11 @@ exports.buscaValorDisponivelPorCategoria = (req, res, next) => {
               lancamentoMesAtual = 0;
             }
 
-            let disponivelMesAtualTrunc = Math.trunc(disponivelMesAtual);
-            let lancamentoMesAtualTrunc = parseInt(lancamentoMesAtual.toString().replace('.', ''));
+            let disponivelMesAtualTrunc = disponivelMesAtual;
+            let lancamentoMesAtualTrunc = lancamentoMesAtual;
             disponivel = (disponivelMesAtualTrunc - lancamentoMesAtualTrunc);
 
-            resolve(parseInt(disponivel));
+            resolve(disponivel);
 
           }
         })
@@ -298,7 +308,7 @@ exports.buscaValorDisponivelPorCategoria = (req, res, next) => {
 
             const resposta = await lancamentosMesAtual(id, prop);
 
-            jsonObj[descricao] = utilNumber.mascaraMoney(resposta);
+            jsonObj[descricao] = resposta;
           }
 
           res.status(200).json(jsonObj);

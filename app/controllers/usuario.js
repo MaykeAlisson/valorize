@@ -167,6 +167,17 @@ exports.atualizaPro = (req, res, next) => {
 
 exports.atualizaSenha = (req, res, next) => {
 
+  req.assert('email', 'Email obrigatorio').notEmpty().isEmail();
+  req.assert('senha', 'Senha obrigatorio').notEmpty();
+
+  const erros = req.validationErrors();
+
+  if (erros) {
+    console.log('Erros de validacao encontados altera senha usuario');
+    res.status(400).send(erros);
+    return;
+  }
+
   let trocaSenha = req.body;
 
   // Chave secreta enviada no email de recuperação para seguranca

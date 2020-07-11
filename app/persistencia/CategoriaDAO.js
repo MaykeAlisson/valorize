@@ -73,6 +73,14 @@ CategoriaDAO.prototype.buscaPorcentagemTodasCategoria = function (idUsuario, cal
   this._connection.query(query, callback);
 };
 
+CategoriaDAO.prototype.categoriaPertenceUsuario = function (idUsuario, idCategoria, callback) {
+  let query = `select id
+              from categoria
+              where id = ${mysql.escape(idCategoria)}
+              and id_usuario = ${mysql.escape(idUsuario)}`;
+  this._connection.query(query, callback);
+};
+
 
 module.exports = CategoriaDAO;
 

@@ -2,6 +2,8 @@ const logger = require('../../config/util/logger.js');
 const utilData = require('../../config/util/UtilDate');
 const connection = require('../persistencia/connectionFactory');
 const LancamentoDAO = require('../persistencia/LancamentoDAO');
+const CategoriaDAO = require('../persistencia/CategoriaDAO');
+const {isEmpty} = require("../../config/util/utilObject");
 
 
 exports.lancamentosMes = (req, res, next) => {
@@ -43,14 +45,28 @@ exports.cadastro = (req, res, next) => {
   lancamento = {...lancamento, id_usuario: idUsuario};
 
   const lancamentoDAO = new LancamentoDAO(connection);
+  const categoriaDAO = new CategoriaDAO(connection);
 
-  lancamentoDAO.cadastro(lancamento, function (erro, resultado) {
+  categoriaDAO.categoriaPertenceUsuario(idUsuario, lancamento.id_categoria, function (erro, id) {
     if (erro) {
-      logger.info('Erro ao Cadastrar  lancamento: ' + erro);
+      logger.info('Erro ao ferificar se conta pertence a usuario: ' + erro);
       res.status(500).send(erro);
       return;
     }
-    res.status(201).send();
+
+    if (isEmpty(id)){
+      res.status(400).send(`Conta com o id ${lancamento.id_categoria} não pertence ao usuario`);
+      return;
+    }
+
+    lancamentoDAO.cadastro(lancamento, function (erro, resultado) {
+      if (erro) {
+        logger.info('Erro ao Cadastrar  lancamento: ' + erro);
+        res.status(500).send(erro);
+        return;
+      }
+      res.status(201).send();
+    });
   });
 
 };
