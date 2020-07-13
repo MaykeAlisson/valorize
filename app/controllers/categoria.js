@@ -240,7 +240,7 @@ exports.buscaValorDisponivelPorCategoria = (req, res, next) => {
   const creditoDAO = new CreditoDAO(connection);
   const lancamentoDAO = new LancamentoDAO(connection);
 
-  let jsonObj = {};
+  let jsonObj = [];
   let resultCategorias = [];
   let creditoMesAtual;
   let tamanhoListaCategoria = 0;
@@ -302,16 +302,21 @@ exports.buscaValorDisponivelPorCategoria = (req, res, next) => {
       const buscaLancamentos = async () => {
 
         try {
-          for (var prop in resultCategorias) {
+          for (let prop in resultCategorias) {
+            let obj = {};
             let id = resultCategorias[prop].id;
             let descricao = resultCategorias[prop].descricao;
 
             const resposta = await lancamentosMesAtual(id, prop);
 
-            jsonObj[descricao] = resposta;
+            obj['id'] = id;
+            obj['descricao'] = descricao;
+            obj['disponivel'] = resposta;
+
+            jsonObj.push(obj);
           }
 
-          res.status(200).json(jsonObj);
+          await res.status(200).json(jsonObj);
           return;
         } catch (error) {
           console.log(error);
